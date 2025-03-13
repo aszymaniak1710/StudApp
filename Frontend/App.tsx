@@ -27,7 +27,7 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Hello from React Native!</Text>
+      <Text style={styles.header}>milosz!</Text>
       <Text>{message}</Text>
       <Button title="Fetch Message" onPress={fetchMessage} />
       <StatusBar style="auto" />
