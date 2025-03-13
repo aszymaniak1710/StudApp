@@ -4,6 +4,8 @@ import com.opi.StudApp.Model.User;
 import com.opi.StudApp.Service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,7 +31,18 @@ public class StudentController {
 
     @PostMapping("register")
     public User addUser(@RequestBody User user){
+        System.out.println("elo");
         return userService.addUser(user);
     }
 
+    @GetMapping("get")
+    public Optional<User> getUsers(){
+        return userService.getUsers();
+    }
+
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @PostMapping("/secure-endpoint")
+    public ResponseEntity<String> secureAction() {
+        return ResponseEntity.ok("Masz dostęp!");
+    }
 }

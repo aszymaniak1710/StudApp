@@ -1,8 +1,6 @@
 package com.opi.StudApp.Model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,7 +10,9 @@ import lombok.NoArgsConstructor;
 @Entity
 public class User {
     @Id
-    public int iD;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    public int id;
+    @Column(unique = true)
     public String username;
     public String password;
     public int roleID;
