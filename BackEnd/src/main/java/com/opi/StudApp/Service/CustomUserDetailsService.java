@@ -1,6 +1,7 @@
 package com.opi.StudApp.Service;
 
 import com.opi.StudApp.Model.User;
+import com.opi.StudApp.Model.UserPrincipal;
 import com.opi.StudApp.Repo.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -21,21 +22,13 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         @Override
         public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-            User user = (User) userRepo.findByUsername(username)
-                    .orElseThrow(() -> new UsernameNotFoundException("Nie znaleziono użytkownika"));
 
-            List<GrantedAuthority> authorities = new ArrayList<>();
-            if (user.getRoleID() == 2) {
-                System.out.println("jest");
-                authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
-            } else {
-                authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+            User user = userRepo.findByUsername(username);
+            if (user == null){
+                System.out.println("User 404");
+                throw new UsernameNotFoundException("User 404");
             }
 
-            return new org.springframework.security.core.userdetails.User(
-                    user.getUsername(),
-                    user.getPassword(),
-                    authorities
-            );
+            return new UserPrincipal(user);
         }
 }

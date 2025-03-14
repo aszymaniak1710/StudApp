@@ -2,30 +2,26 @@ package com.opi.StudApp.Service;
 
 import com.opi.StudApp.Model.User;
 import com.opi.StudApp.Repo.UserRepo;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
 
 @Service
 public class UserService {
 
+
     @Autowired
     private UserRepo userRepo;
+    private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Transactional
     public User addUser(User user){
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userRepo.save(user);
-        return user;
+        user.setPassword(encoder.encode(user.getPassword()));
+        return userRepo.save(user);
     }
 
-    public Optional<User> getUsers(){
-        return userRepo.findById(1);
+    public User findByUsername(String username){
+        return userRepo.findByUsername(username);
     }
 }
