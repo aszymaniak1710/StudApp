@@ -24,6 +24,7 @@ public class SecurityConfig {
     @Autowired
     private CustomUserDetailsService userDetailsService;
 
+    @Bean
     public AuthenticationProvider authenticationProvider(){
 
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();

@@ -27,7 +27,7 @@ public class UserController {
     @Autowired
     private AuthenticationManager authenticationManager;
 
-    @PostMapping("register")
+    @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody User user) {
         User existingUser = userService.findByUsername(user.getUsername());
 
