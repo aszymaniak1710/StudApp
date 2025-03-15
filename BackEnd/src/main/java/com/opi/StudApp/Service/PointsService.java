@@ -14,10 +14,20 @@ public class PointsService {
     private PointsRepo pointsRepo;
 
     public List<Point> getPoints() {
+        return pointsRepo.findByValid(true);
+    }
+
+    public List<Point> getAllPoints() {
         return pointsRepo.findAll();
     }
 
-    public Point addPoint(Point point) {
-        return pointsRepo.save(point);
+    public String addPoint(Point point) {
+        pointsRepo.save(point);
+        return "Point created";
+    }
+
+    public String deletePoint(Point point) {
+        pointsRepo.delete(point);
+        return "Point deleted";
     }
 }

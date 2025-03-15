@@ -20,13 +20,12 @@ public class UserPrincipal implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> authorities = new ArrayList<>();
+        authorities.add(new SimpleGrantedAuthority("USER"));
         if (user.getRoleID() == 2) {
             authorities.add(new SimpleGrantedAuthority("ADMIN"));
-            authorities.add(new SimpleGrantedAuthority("USER"));
-            System.out.println("Admin wszedł");
-        } else {
-            authorities.add(new SimpleGrantedAuthority("USER"));
-            System.out.println("User wszedł");
+        }
+        if (user.getRoleID() == 3) {
+            authorities.add(new SimpleGrantedAuthority("HEAD_ADMIN"));
         }
         return authorities;
     }

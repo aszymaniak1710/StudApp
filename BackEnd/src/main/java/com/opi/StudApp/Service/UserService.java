@@ -16,12 +16,23 @@ public class UserService {
     private UserRepo userRepo;
     private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
 
-    public User addUser(User user){
+    public String addUser(User user){
         user.setPassword(encoder.encode(user.getPassword()));
-        return userRepo.save(user);
+        userRepo.save(user);
+        return "Welcome!";
     }
 
     public User findByUsername(String username){
         return userRepo.findByUsername(username);
+    }
+
+    public String setUserAsAdmin(User user, int roleID) {
+        user.setRoleID(roleID);
+        userRepo.save(user);
+        return "User`s permisions changed";
+    }
+
+    public int getRole(String username) {
+        return userRepo.findByUsername(username).getRoleID();
     }
 }
