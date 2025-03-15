@@ -50,6 +50,11 @@ public class UserController {
             return "Login Failed";
     }
 
+    @GetMapping("mapy")
+    public ResponseEntity<String> getP() {
+
+        return new ResponseEntity<>("ElO BQ", HttpStatus.OK);
+    }
     @GetMapping("map")
     public ResponseEntity<List<Point>> getPoints() {
 
