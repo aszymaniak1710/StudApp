@@ -28,55 +28,5 @@ public class Point {
     @OneToMany(mappedBy = "point", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments;
     private boolean valid;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    @Nonnull
-    public String getXcoor() {
-        return xcoor;
-    }
-
-    public void setXcoor(@Nonnull String xcoor) {
-        this.xcoor = xcoor;
-    }
-
-    @Nonnull
-    public String getYcoor() {
-        return ycoor;
-    }
-
-    public void setYcoor(@Nonnull String ycoor) {
-        this.ycoor = ycoor;
-    }
-
-    @Nonnull
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(@Nonnull String description) {
-        this.description = description;
-    }
-
-    public List<Comment> getComments() {
-        return comments;
-    }
-
-    public void setComments(List<Comment> comments) {
-        this.comments = comments;
-    }
-
-    public boolean isValid() {
-        return valid;
-    }
-
-    public void setValid(boolean valid) {
-        this.valid = valid;
-    }
 }
+
