@@ -15,54 +15,70 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 public class Point {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonProperty("id")
-    private Integer id;
-    @Nonnull
-    private String xCoor;
-    @Nonnull
-    private String yCoor;
-    @Nonnull
-    private String Description;
-    @OneToMany
-    private List<Comment> comments;
-    private boolean valid;
-
-    public void setxCoor(@Nonnull String xCoor) {
-        this.xCoor = xCoor;
+    public Integer getId() {
+        return id;
     }
 
-    public void setyCoor(@Nonnull String yCoor) {
-        this.yCoor = yCoor;
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    @Nonnull
+    public String getXcoor() {
+        return xcoor;
+    }
+
+    public void setXcoor(@Nonnull String xcoor) {
+        this.xcoor = xcoor;
+    }
+
+    @Nonnull
+    public String getYcoor() {
+        return ycoor;
+    }
+
+    public void setYcoor(@Nonnull String ycoor) {
+        this.ycoor = ycoor;
+    }
+
+    @Nonnull
+    public String getDescription() {
+        return description;
     }
 
     public void setDescription(@Nonnull String description) {
-        Description = description;
+        this.description = description;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
     }
 
     public void setComments(List<Comment> comments) {
         this.comments = comments;
     }
 
+    public boolean isValid() {
+        return valid;
+    }
+
     public void setValid(boolean valid) {
         this.valid = valid;
     }
 
-    public boolean getValid() {
-        return valid;
-    }
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonProperty("id")
+    private Integer id;
+    @Nonnull
+    private String xcoor;
+    @Nonnull
+    private String ycoor;
+    @Nonnull
+    private String description;
+    @OneToMany
+    private List<Comment> comments;
+    private boolean valid;
 
-    @Override
-    public String toString() {
-        return "Point{" +
-                "id=" + id +
-                ", xCoor='" + xCoor + '\'' +
-                ", yCoor='" + yCoor + '\'' +
-                ", Description='" + Description + '\'' +
-                ", comments=" + comments +
-                ", valid=" + valid +
-                '}';
-    }
+
 }
