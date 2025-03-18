@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PointsService {
@@ -13,7 +14,7 @@ public class PointsService {
     @Autowired
     private PointsRepo pointsRepo;
 
-    public List<Point> getPoints() {
+    public List<Point> getValidPoints() {
         return pointsRepo.findByValid(true);
     }
 
@@ -29,5 +30,10 @@ public class PointsService {
     public String deletePoint(Point point) {
         pointsRepo.delete(point);
         return "Point deleted";
+    }
+
+    public Point getPointById(int pointId) {
+        return pointsRepo.findById(pointId)
+                .orElse(null);
     }
 }

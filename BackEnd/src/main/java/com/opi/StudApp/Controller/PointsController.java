@@ -13,15 +13,14 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-public class MapController {
+public class PointsController {
 
     @Autowired
     PointsService pointsService;
+
     @GetMapping("map")
-    public ResponseEntity<List<Point>> getPoints() {
-        List<Point> result = pointsService.getPoints();
-        System.out.println(result);
-        return new ResponseEntity<>(pointsService.getPoints(), HttpStatus.OK);
+    public ResponseEntity<List<Point>> getValidPoints() {
+        return new ResponseEntity<>(pointsService.getValidPoints(), HttpStatus.OK);
     }
 
     @GetMapping("mapextra")
@@ -30,7 +29,7 @@ public class MapController {
     }
 
     @PostMapping("admin/addpoint")
-    public ResponseEntity<String> addPoint(@RequestBody Point point){
+    public ResponseEntity<String> addValidPoint(@RequestBody Point point){
         point.setValid(true);
         return new ResponseEntity<>(pointsService.addPoint(point), HttpStatus.OK);
     }

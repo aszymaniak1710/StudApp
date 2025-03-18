@@ -1,9 +1,11 @@
 package com.opi.StudApp.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.boot.autoconfigure.web.WebProperties;
 
 import java.lang.ref.Reference;
 
@@ -13,6 +15,7 @@ import java.lang.ref.Reference;
 @Entity
 public class Comment {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @OneToOne
     private User user;
@@ -21,5 +24,6 @@ public class Comment {
     private Mark mark;
     @ManyToOne
     @JoinColumn(name = "id_point", nullable = false)
+    @JsonIgnore
     private Point point;
 }
