@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.lang.ref.Reference;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -17,6 +19,7 @@ public class Comment {
     private String text;
     @Enumerated(EnumType.STRING)
     private Mark mark;
-
-
+    @ManyToOne
+    @JoinColumn(name = "id_point", nullable = false)
+    private Point point;
 }

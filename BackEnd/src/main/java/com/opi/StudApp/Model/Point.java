@@ -15,6 +15,20 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 public class Point {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonProperty("id")
+    private Integer id;
+    @Nonnull
+    private String xcoor;
+    @Nonnull
+    private String ycoor;
+    @Nonnull
+    private String description;
+    @OneToMany(mappedBy = "point", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments;
+    private boolean valid;
+
     public Integer getId() {
         return id;
     }
@@ -65,20 +79,4 @@ public class Point {
     public void setValid(boolean valid) {
         this.valid = valid;
     }
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonProperty("id")
-    private Integer id;
-    @Nonnull
-    private String xcoor;
-    @Nonnull
-    private String ycoor;
-    @Nonnull
-    private String description;
-    @OneToMany
-    private List<Comment> comments;
-    private boolean valid;
-
-
 }
