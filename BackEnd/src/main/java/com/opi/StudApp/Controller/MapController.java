@@ -19,6 +19,8 @@ public class MapController {
     PointsService pointsService;
     @GetMapping("map")
     public ResponseEntity<List<Point>> getPoints() {
+        List<Point> result = pointsService.getPoints();
+        System.out.println(result);
         return new ResponseEntity<>(pointsService.getPoints(), HttpStatus.OK);
     }
 
