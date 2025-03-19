@@ -21,10 +21,10 @@ public class UserPrincipal implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority("USER"));
-        if (user.getRoleID() == 2) {
+        if (user.getRoleid() == 2) {
             authorities.add(new SimpleGrantedAuthority("ADMIN"));
         }
-        if (user.getRoleID() == 3) {
+        if (user.getRoleid() == 3) {
             authorities.add(new SimpleGrantedAuthority("HEAD_ADMIN"));
         }
         return authorities;

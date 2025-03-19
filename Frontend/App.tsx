@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, StatusBar, Button } from 'react-native';
-import api from './app';  // Importuj z pliku, gdzie masz ustawioną instancję API
+// import api from './app';
+import axios from "axios"// Importuj z pliku, gdzie masz ustawioną instancję API
 
 export default function App() {
   // Stan do przechowywania odpowiedzi z backendu
@@ -12,7 +13,7 @@ export default function App() {
   // Funkcja do wysyłania zapytania GET
   const fetchMessage = async () => {
     try {
-      const response = await api.get(API_URL);  // Użyj 'api' z interceptorami
+      const response = await axios.get(API_URL);  // Użyj 'api' z interceptorami
       setMessage(response.data);  // Ustaw odpowiedź w stanie
     } catch (error) {
       console.error('Error fetching message:', error);
