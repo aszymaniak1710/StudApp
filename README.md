@@ -1,8 +1,1 @@
-		<dependency>
-			<groupId>jakarta.persistence</groupId>
-			<artifactId>jakarta.persistence-api</artifactId>
-			<version>3.0.0</version>
-		</dependency>
-
-
-import jakarta.persistence.Entity; 
+Aplikajca mobilna dla studentów, do wyszukiwania promocji oraz miejsc, w których honoruje się legitymację studencką.
