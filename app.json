@@ -1,0 +1,32 @@
+{
+  "expo": {
+    "name": "FrontAPP",
+    "slug": "FrontAPP",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": false, //przedtem było true!!!
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "bundleIdentifier": "com.example.myapp",
+      "supportsTablet": true,
+      "buildNumber": "1.0.0",
+      "googleServicesFile": "./GoogleService-Info.plist"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "package": "com.anonymous.FrontAPP"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    }
+  }
+}
