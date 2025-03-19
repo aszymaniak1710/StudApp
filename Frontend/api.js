@@ -8,8 +8,8 @@ const api = axios.create({
 
 // ✅ Interceptor dodający token do każdego requestu
 api.interceptors.request.use(async (config) => {
-    // const token = await AsyncStorage.getItem('token');
-    const token = "123";
+    const token = await AsyncStorage.getItem('token');
+    //const token = "123";
     if (token) {
         config.headers.Authorization = `Bearer ${token}`;
     }

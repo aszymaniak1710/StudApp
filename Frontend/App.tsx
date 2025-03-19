@@ -1,19 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, StatusBar, Button } from 'react-native';
-// import api from './app';
-import axios from "axios"// Importuj z pliku, gdzie masz ustawioną instancję API
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import api from './api'; // Twój plik API
 
-export default function App() {
-  // Stan do przechowywania odpowiedzi z backendu
+// Import nowych ekranów
+import NewScreen from './NewScreen';  // Zakładam, że ten plik już istnieje
+import SignUpScreen from './SignUpScreen'; // Import ekranu z mapą
+import LoginScreen from './LoginScreen';
+
+// Typ dla props nawigacji
+type HomeScreenProps = {
+  navigation: any;
+};
+
+const HomeScreen = ({ navigation }: HomeScreenProps) => {
   const [message, setMessage] = useState<string>('Loading...');
+  const API_URL = 'http://192.168.1.26:8080/hello';
 
-  // URL backendu (zamień na swoje lokalne IP)
-  const API_URL = 'http://192.168.1.26:8080/hello';  // Zmień na swoje IP
-
-  // Funkcja do wysyłania zapytania GET
   const fetchMessage = async () => {
     try {
-      const response = await axios.get(API_URL);  // Użyj 'api' z interceptorami
+      const response = await api.get(API_URL);  // Użyj 'api' z interceptorami
       setMessage(response.data);  // Ustaw odpowiedź w stanie
     } catch (error) {
       console.error('Error fetching message:', error);
@@ -21,18 +28,45 @@ export default function App() {
     }
   };
 
-  // Użycie useEffect do załadowania danych przy starcie aplikacji
   useEffect(() => {
-    fetchMessage();  // Ładowanie danych przy starcie
+    fetchMessage();
   }, []);
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>milosz!</Text>
+      <Text style={styles.header}>Hello from React Native!</Text>
       <Text>{message}</Text>
       <Button title="Fetch Message" onPress={fetchMessage} />
+      <Button title="Go to Details" onPress={() => navigation.navigate('Details')} />
+      <Button title="Go to Map" onPress={() => navigation.navigate('NewScreen')} />
+      <Button title="Go to Register" onPress={() => navigation.navigate('SignUpScreen')} />
+      <Button title="Go to Login" onPress={() => navigation.navigate('LoginScreen')} />
       <StatusBar style="auto" />
     </View>
+  );
+};
+
+// Ekran szczegółów
+const DetailsScreen = () => (
+  <View style={styles.container}>
+    <Text style={styles.header}>This is the Details Screen</Text>
+  </View>
+);
+
+// Create stack navigator
+const Stack = createStackNavigator();
+
+export default function App() {
+  return (
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Home">
+        <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="Details" component={DetailsScreen} />
+        <Stack.Screen name="NewScreen" component={NewScreen} />
+        <Stack.Screen name="SignUpScreen" component={SignUpScreen} />
+        <Stack.Screen name="LoginScreen" component={LoginScreen} />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
 
