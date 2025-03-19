@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
+@CrossOrigin(origins = "*")
 @RestController
 public class UserController {
 
@@ -40,6 +41,8 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<List<String>> login(@RequestBody User user) {
+        System.out.println(user);
+
         Authentication authentication = authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
 

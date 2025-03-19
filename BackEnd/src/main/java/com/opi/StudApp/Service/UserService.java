@@ -27,12 +27,12 @@ public class UserService {
     }
 
     public String setUserAsAdmin(User user, int roleID) {
-        user.setRoleID(roleID);
+        user.setRoleid(roleID);
         userRepo.save(user);
         return "User`s permisions changed";
     }
 
     public int getRole(String username) {
-        return userRepo.findByUsername(username).getRoleID();
+        return userRepo.findByUsername(username).getRoleid();
     }
 }
