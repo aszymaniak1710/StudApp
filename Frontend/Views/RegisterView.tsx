@@ -1,9 +1,9 @@
-// SignUpScreen.tsx
+// RegisterView.tsx
 import React, { useState } from 'react';
 import { View, TextInput, Button, Text, Alert, StyleSheet } from 'react-native';
-import api from "./api";
+import api from "../api";
 
-const SignUpScreen = ({ navigation }: any) => {
+const RegisterView = ({ navigation }: any) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [password2, setPassword2] = useState('');
@@ -71,7 +71,7 @@ const SignUpScreen = ({ navigation }: any) => {
 
       <Button title="Zarejestruj się" onPress={handleSignUp} disabled={loading} />
       <Text style={styles.footer}>
-        Masz już konto? <Text style={styles.link} onPress={() => navigation.navigate('LoginScreen')}>Zaloguj się</Text>
+        Masz już konto? <Text style={styles.link} onPress={() => navigation.navigate('Logowanie')}>Zaloguj się</Text>
       </Text>
     </View>
   );
@@ -106,4 +106,4 @@ const styles = StyleSheet.create({
 });
 
 
-export default SignUpScreen;
+export default RegisterView;

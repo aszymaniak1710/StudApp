@@ -4,11 +4,11 @@ import React, { useState, useEffect } from 'react';
  import * as Location from 'expo-location';
  import { MaterialCommunityIcons } from '@expo/vector-icons';
  import AsyncStorage from '@react-native-async-storage/async-storage';
- import AddCommentModal from './AddCommentModal'; // Nowy komponent do dodawania komentarzy
+ import AddCommentModal from '../AddCommentModal'; // Nowy komponent do dodawania komentarzy
  import SearchComment from './SearchComment'
-import api from "./api"
+import api from "../api"
 
- export default function NewScreen() {
+ export default function PointsView() {
    const [markers, setMarkers] = useState<{ latitude: number, longitude: number, title: string, description: string }[]>([]);
    const [modalVisible, setModalVisible] = useState(false);
    const [newTitle, setNewTitle] = useState('');
@@ -22,15 +22,13 @@ import api from "./api"
    const [currentMarkerIndex, setCurrentMarkerIndex] = useState<number | null>(null);
    const [searchCommentVisible, setSearchCommentVisible] = useState(false);
 
-   //odczytanie tokena
    const [jwtToken, setJwtToken] = useState('');
 
    useEffect(() => {
-     // Odczytanie tokenu z AsyncStorage
      const fetchToken = async () => {
-       const token = await AsyncStorage.getItem('jwtToken');
-       if (token) {
-         setJwtToken(token);
+       const jwtToken = await AsyncStorage.getItem('jwtToken');
+       if (jwtToken) {
+         setJwtToken(jwtToken);
        } else {
          Alert.alert("You are not logged in To add comments, please log in to your account first.");
        }
@@ -73,22 +71,37 @@ import api from "./api"
    };
 
 
-   const addMarker = () => {
+   const addMarker = async () => {
      if (!newTitle) {
        Alert.alert("Error", "Title is required!");
        return;
      }
 
      if (selectedCoordinates) {
-       setMarkers([
-         ...markers,
-         {
-           latitude: selectedCoordinates.latitude,
-           longitude: selectedCoordinates.longitude,
-           title: newTitle,
-           description: newDescription || "No description",
-         },
-       ]);
+       const newMarker = {
+         xcoor: selectedCoordinates.latitude,  // Używamy xcoor zamiast latitude
+         ycoor: selectedCoordinates.longitude, // Używamy ycoor zamiast longitude
+         title: newTitle,
+         description: newDescription || "No description",
+       };
+
+       console.log("Sending the following data:", newMarker);
+
+       try {
+         // Wysłanie danych na serwer
+         const response = await api.post('http://192.168.1.26:8080/admin/addpoint', newMarker);
+         if (response.status === 201) {
+           Alert.alert("Success", "Marker successfully added!");
+           fetchMarkers(); // Odświeżenie listy markerów po dodaniu
+         } else {
+           Alert.alert("Error", "Failed to add marker.");
+         }
+       } catch (error) {
+         console.error("Error adding marker:", error);
+         Alert.alert("Error", "An error occurred while adding the marker.");
+       }
+
+       // Resetowanie formularza
        setModalVisible(false);
        setNewTitle('');
        setNewDescription('');
@@ -96,6 +109,8 @@ import api from "./api"
        setIsAddingMarker(false);
      }
    };
+
+
 
    const handleMapPress = (e: any) => {
      if (isAddingMarker) {
@@ -134,16 +149,16 @@ import api from "./api"
    return (
      <View style={styles.container}>
        {userLocation ? (
-         <MapView
-           style={styles.map}
-           initialRegion={{
-             latitude: userLocation.latitude,
-             longitude: userLocation.longitude,
-             latitudeDelta: 0.0922,
-             longitudeDelta: 0.0421,
-           }}
-           onPress={handleMapPress}
-         >
+           <MapView
+               style={styles.map}
+               initialRegion={{
+                 latitude: userLocation.latitude,
+                 longitude: userLocation.longitude,
+                 latitudeDelta: 0.0922,
+                 longitudeDelta: 0.0421,
+               }}
+               onPress={handleMapPress}
+           >
            {markers.map((marker, index) => (
              <Marker
                key={index}
