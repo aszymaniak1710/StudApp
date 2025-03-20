@@ -3,10 +3,10 @@ import { View, TextInput, Button, Text, Alert, StyleSheet } from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import SignUpScreen from './SignUpScreen'
+import RegisterView from './RegisterView'
 
-const LoginScreen = ({ navigation }: any) => {
-  const [email, setEmail] = useState('');
+const LoginView = ({ navigation }: any) => {
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -15,7 +15,7 @@ const LoginScreen = ({ navigation }: any) => {
 
     // Przygotowanie danych do wysłania
     const loginData = {
-      username: email,  // Zmieniamy na username jeśli backend tego wymaga
+      username: username,  // Zmieniamy na username jeśli backend tego wymaga
       password: password,
     };
 
@@ -24,16 +24,16 @@ const LoginScreen = ({ navigation }: any) => {
       const response = await axios.post('http://192.168.1.26:8080/login', loginData);
 
       // Sprawdzamy odpowiedź
-      const [jwtToken, userId] = response.data;
+      const [jwtToken, roleid] = response.data;
 
-      if (jwtToken && userId) {
+      if (jwtToken && roleid) {
         // Zapisz token JWT do AsyncStorage lub innego bezpiecznego miejsca
         await AsyncStorage.setItem('jwtToken', jwtToken);
-        await AsyncStorage.setItem('userId', userId.toString());
+        await AsyncStorage.setItem('roleid', roleid.toString());
         Alert.alert('Zalogowano pomyślnie!');
 
         // Możesz przekierować użytkownika na ekran główny po pomyślnym logowaniu
-        navigation.navigate('Home');
+        navigation.navigate('Strona główna');
       } else {
         Alert.alert('Błąd logowania', 'Niepoprawne dane logowania');
       }
@@ -48,9 +48,9 @@ const LoginScreen = ({ navigation }: any) => {
       <Text style={styles.header}>Logowanie</Text>
       <TextInput
         style={styles.input}
-        placeholder="Email"
-        value={email}
-        onChangeText={setEmail}
+        placeholder="Nazwa użytkownika"
+        value={username}
+        onChangeText={setUsername}
         keyboardType="email-address"
       />
       <TextInput
@@ -62,7 +62,7 @@ const LoginScreen = ({ navigation }: any) => {
       />
       <Button title="Zaloguj się" onPress={handleSignIn} disabled={loading} />
       <Text style={styles.footer}>
-        Nie masz konta? <Text style={styles.link} onPress={() => navigation.navigate('SignUpScreen')}>Zarejestruj się XD</Text>
+        Nie masz konta? <Text style={styles.link} onPress={() => navigation.navigate('RegisterView')}>Zarejestruj się XD</Text>
       </Text>
     </View>
   );
@@ -96,4 +96,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default LoginScreen;
+export default LoginView;

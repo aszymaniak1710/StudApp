@@ -20,9 +20,11 @@ public class Point {
     @JsonProperty("id")
     private Integer id;
     @Nonnull
-    private String xcoor;
+    private String title;
     @Nonnull
-    private String ycoor;
+    private float xcoor;
+    @Nonnull
+    private float ycoor;
     @Nonnull
     private String description;
     @OneToMany(mappedBy = "point", cascade = CascadeType.ALL, orphanRemoval = true)

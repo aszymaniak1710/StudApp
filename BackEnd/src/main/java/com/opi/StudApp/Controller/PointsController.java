@@ -29,6 +29,7 @@ public class PointsController {
     @PostMapping("admin/addpoint")
     public ResponseEntity<String> addValidPoint(@RequestBody Point point){
         point.setValid(true);
+        System.out.println(point);
         return new ResponseEntity<>(pointsService.addPoint(point), HttpStatus.OK);
     }
 
