@@ -1,7 +1,7 @@
 package com.opi.StudApp.Controller;
 
 import com.opi.StudApp.Model.Point;
-import com.opi.StudApp.Service.PointsService;
+import com.opi.StudApp.Service.AppService.PointsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -1,13 +1,11 @@
 package com.opi.StudApp.Model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.opi.StudApp.Model.Enum.Mark;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.boot.autoconfigure.web.WebProperties;
-
-import java.lang.ref.Reference;
 
 @Data
 @NoArgsConstructor

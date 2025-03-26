@@ -1,7 +1,7 @@
 package com.opi.StudApp.Security;
 
-import com.opi.StudApp.Service.CustomUserDetailsService;
-import com.opi.StudApp.Service.JwtService;
+import com.opi.StudApp.Service.UserService.CustomUserDetailsService;
+import com.opi.StudApp.Service.UserService.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -40,7 +40,8 @@ public class JwtFilter extends OncePerRequestFilter {
 
         if(header != null && header.startsWith("Bearer ")){
             token = header.substring(7);
-            userName = jwtService.extractUserName(token);
+            System.out.println(token);
+            userName = jwtService.extractEmail(token);
         }
 
         if(userName != null && SecurityContextHolder.getContext().getAuthentication() == null){

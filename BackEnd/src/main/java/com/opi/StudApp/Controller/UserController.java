@@ -1,16 +1,12 @@
 package com.opi.StudApp.Controller;
 
-import com.opi.StudApp.Model.Point;
 import com.opi.StudApp.Model.User;
-import com.opi.StudApp.Service.JwtService;
-import com.opi.StudApp.Service.PointsService;
-import com.opi.StudApp.Service.UserService;
-import jakarta.servlet.http.HttpServletRequest;
+import com.opi.StudApp.Service.UserService.JwtService;
+import com.opi.StudApp.Service.UserService.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -59,7 +55,7 @@ public class UserController {
     @PostMapping("/headadmin/setrole/{roleID}")
     public ResponseEntity<String> setUserAsAdmin(@RequestBody User user, @PathVariable int roleID) {
 
-        return new ResponseEntity<>(userService.setUserAsAdmin(user, roleID), HttpStatus.OK);
+        return new ResponseEntity<>(userService.setUserAsAdmin(user), HttpStatus.OK);
     }
 
     @GetMapping("/headadmin/{username}/password")
@@ -80,9 +76,15 @@ public class UserController {
 
         String token = authorizationHeader.substring(7);
 
-        User user = userService.findByUsername(jwtService.extractUserName(token));
+        User user = userService.findByUsername(jwtService.extractEmail(token));
         user.setPassword(password);
         userService.addUser(user);
         return new ResponseEntity<>("Password changed", HttpStatus.OK);
+    }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<String> forgotPassword(@RequestBody String email) {
+//        return userService.resetPassword(email);
+        return null;
     }
 }

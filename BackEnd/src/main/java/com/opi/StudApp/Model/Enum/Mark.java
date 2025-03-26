@@ -1,4 +1,4 @@
-package com.opi.StudApp.Model;
+package com.opi.StudApp.Model.Enum;
 
 import lombok.Getter;
 

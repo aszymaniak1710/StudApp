@@ -1,4 +1,4 @@
-package com.opi.StudApp.Service;
+package com.opi.StudApp.Service.AppService;
 
 import com.opi.StudApp.Model.Comment;
 import com.opi.StudApp.Model.Point;
@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class CommentService {

@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from 'react';
- import { View, Text, StyleSheet, TextInput, Modal, TouchableOpacity, Alert } from 'react-native';
+ import { View, Text, StyleSheet, TextInput, Modal, TouchableOpacity, Alert, Animated } from 'react-native';
  import MapView, { Marker } from 'react-native-maps';
  import * as Location from 'expo-location';
  import { MaterialCommunityIcons } from '@expo/vector-icons';
  import AsyncStorage from '@react-native-async-storage/async-storage';
  import AddCommentModal from '../AddCommentModal'; // Nowy komponent do dodawania komentarzy
  import SearchComment from './SearchComment'
+import {Gesture, GestureDetector, GestureHandlerRootView, PanGestureHandler, State} from 'react-native-gesture-handler';
 import api from "../api"
+import {Easing, useAnimatedStyle, useSharedValue, withSpring, withTiming} from "react-native-reanimated";
+
+const OPEN_THRESHOLD = 100;
 
  export default function PointsView() {
    const [markers, setMarkers] = useState<{ latitude: number, longitude: number, title: string, description: string }[]>([]);
@@ -51,6 +55,7 @@ import api from "../api"
      getUserLocation();
      fetchMarkers();
    }, []);
+
    const fetchMarkers = async () => {
      try {
        const response = await api.get('http://192.168.1.26:8080/map'); // Adres endpointu backendowego
@@ -120,17 +125,17 @@ import api from "../api"
      }
    };
 
-   const removeMarker = (markerIndex: number) => {
-     Alert.alert("Delete Marker", "Are you sure you want to delete this marker?", [
-       { text: "Cancel", style: "cancel" },
-       { text: "Delete", onPress: () => setMarkers(markers.filter((_, index) => index !== markerIndex)) },
-     ]);
-   };
+   // const removeMarker = (markerIndex: number) => {
+   //   Alert.alert("Delete Marker", "Are you sure you want to delete this marker?", [
+   //     { text: "Cancel", style: "cancel" },
+   //     { text: "Delete", onPress: () => setMarkers(markers.filter((_, index) => index !== markerIndex)) },
+   //   ]);
+   // };
 
    const handleMarkerPress = (markerIndex: number) => {
      Alert.alert("Marker Options", "Choose an action", [
        { text: "Cancel", style: "cancel" },
-       { text: "Delete", onPress: () => removeMarker(markerIndex) },
+       // { text: "Delete", onPress: () => removeMarker(markerIndex) },
        { text: "Add Comment", onPress: () => {
            setCurrentMarkerIndex(markerIndex);
            setCommentModalVisible(true);
@@ -144,47 +149,72 @@ import api from "../api"
       }
      ]);
    };
+   const [isPanelOpen, setIsPanelOpen] = useState(false);
+   const translateX = new Animated.Value(-300); // Panel początkowo schowany
 
+   // Funkcja do wysuwania i chowania panelu
+   const togglePanel = () => {
+     const toValue = isPanelOpen ? -300 : 0; // Wartość do której ma się przesunąć panel
+
+     Animated.spring(translateX, {
+       toValue,
+       useNativeDriver: true,
+     }).start();
+
+     setIsPanelOpen(!isPanelOpen); // Zmieniamy stan, aby wiedzieć, czy panel jest otwarty czy zamknięty
+   };
 
    return (
      <View style={styles.container}>
-       {userLocation ? (
-           <MapView
-               style={styles.map}
-               initialRegion={{
-                 latitude: userLocation.latitude,
-                 longitude: userLocation.longitude,
-                 latitudeDelta: 0.0922,
-                 longitudeDelta: 0.0421,
-               }}
-               onPress={handleMapPress}
-           >
-           {markers.map((marker, index) => (
-             <Marker
-               key={index}
-               coordinate={{ latitude: marker.latitude, longitude: marker.longitude }}
-               title={marker.title}
-               description={marker.description}
-               onCalloutPress={() => handleMarkerPress(index)}
-             />
-           ))}
-         </MapView>
-       ) : (
-         <Text>Loading user location...</Text>
-       )}
+       {/*{userLocation ? (*/}r
+       {/*    <MapView*/}
+       {/*        style={styles.map}*/}
+       {/*        initialRegion={{*/}
+       {/*          latitude: userLocation.latitude,*/}
+       {/*          longitude: userLocation.longitude,*/}
+       {/*          latitudeDelta: 0.0922,*/}
+       {/*          longitudeDelta: 0.0421,*/}
+       {/*        }}*/}
+       {/*        onPress={handleMapPress}*/}
+       {/*    >*/}
+       {/*    {markers.map((marker, index) => (*/}
+       {/*      <Marker*/}
+       {/*        key={index}*/}
+       {/*        coordinate={{ latitude: marker.latitude, longitude: marker.longitude }}*/}
+       {/*        title={marker.title}*/}
+       {/*        description={marker.description}*/}
+       {/*        onCalloutPress={() => handleMarkerPress(index)}*/}
+       {/*      />*/}
+       {/*    ))}*/}
+       {/*  </MapView>*/}
+       {/*) : (*/}
+       {/*  <Text>Loading user location...</Text>*/}
+       {/*)}*/}
 
-       {isAddingMarker && (
-         <View style={styles.infoBox}>
-           <Text style={styles.infoText}>You are in "Add Marker" mode. Click on the map and send suggestion to admin. After submission the marker will be visible for other users.</Text>
-         </View>
-       )}
 
-       <TouchableOpacity
-         style={[styles.addButton, isAddingMarker ? styles.addButtonActive : {}]}
-         onPress={() => setIsAddingMarker(!isAddingMarker)}
-       >
-         <MaterialCommunityIcons name="plus-circle" size={50} color={isAddingMarker ? 'red' : 'green'} />
+       <TouchableOpacity onPress={togglePanel} style={styles.button}>
+         <Text style={styles.buttonText}>Open Panel</Text>
        </TouchableOpacity>
+
+       <Animated.View style={[styles.panel, { transform: [{ translateX }] }]}>
+         <Text style={styles.panelText}>This is a side panel</Text>
+         <TouchableOpacity onPress={togglePanel} style={styles.closeButton}>
+           <Text style={styles.buttonText}>Close Panel</Text>
+         </TouchableOpacity>
+       </Animated.View>
+
+       {/*{isAddingMarker && (*/}
+       {/*  <View style={styles.infoBox}>*/}
+       {/*    <Text style={styles.infoText}>You are in "Add Marker" mode. Click on the map and send suggestion to admin. After submission the marker will be visible for other users.</Text>*/}
+       {/*  </View>*/}
+       {/*)}*/}
+
+       {/*<TouchableOpacity*/}
+       {/*  style={[styles.addButton, isAddingMarker ? styles.addButtonActive : {}]}*/}
+       {/*  onPress={() => setIsAddingMarker(!isAddingMarker)}*/}
+       {/*>*/}
+       {/*  <MaterialCommunityIcons name="plus-circle" size={50} color={isAddingMarker ? 'red' : 'green'} />*/}
+       {/*</TouchableOpacity>*/}
 
        <Modal animationType="slide" transparent={true} visible={modalVisible} onRequestClose={() => setModalVisible(false)}>
          <View style={styles.modalContainer}>
@@ -216,9 +246,39 @@ import api from "../api"
                />
      </View>
    );
+
  }
 
  const styles = StyleSheet.create({
+   button: {
+     backgroundColor: 'blue',
+     padding: 10,
+     borderRadius: 5,
+   },
+   buttonText: {
+     color: 'white',
+     fontSize: 18,
+   },
+   panel: {
+     position: 'absolute',
+     top: 0,
+     left: 0,
+     bottom: 0,
+     width: 250,
+     backgroundColor: 'lightblue',
+     padding: 20,
+     justifyContent: 'center',
+   },
+   panelText: {
+     fontSize: 20,
+     marginBottom: 20,
+   },
+   closeButton: {
+     backgroundColor: 'red',
+     padding: 10,
+     borderRadius: 5,
+     alignItems: 'center',
+   },
    container: { flex: 1 },
    map: { width: '100%', height: '100%' },
    addButton: { position: 'absolute', bottom: 30, right: 30, backgroundColor: 'white', borderRadius: 50, padding: 10, elevation: 5 },
