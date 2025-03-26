@@ -2,9 +2,8 @@ package com.opi.StudApp.Controller;
 
 import com.opi.StudApp.Model.Comment;
 import com.opi.StudApp.Model.Point;
-import com.opi.StudApp.Service.CommentService;
-import com.opi.StudApp.Service.PointsService;
-import jakarta.servlet.http.HttpServletRequest;
+import com.opi.StudApp.Service.AppService.CommentService;
+import com.opi.StudApp.Service.AppService.PointsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 @CrossOrigin(origins = "*")
 @RestController
