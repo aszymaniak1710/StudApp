@@ -26,20 +26,20 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
         OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
 
         String email = oAuth2User.getAttribute("email");
-        String name = oAuth2User.getAttribute("name");
 
-        User user = userRepo.findByEmail(email);
+        User user = userRepo.findByUsername(email);
         if (user == null){
-            user = new User(email, name, AuthProvider.GOOGLE);
-            user.setEmailverified(true);
+            user = new User(email);
+            user.setAuthprovider(AuthProvider.GOOGLE);
             userRepo.save(user);
         }
 
-        String jwt = jwtService.generateToken(user.getEmail());
-        String role = user.getRole().name();
+        String jwt = jwtService.generateToken(user.getUsername());
+        String role = user.getUserrole().name();
 
         String jsonResponse = String.format("{[\"%s\", \"%s\"]}", jwt, role);
         response.setContentType("application/json");
         response.getWriter().write(jsonResponse);
+
     }
 }

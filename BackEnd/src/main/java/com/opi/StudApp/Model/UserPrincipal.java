@@ -21,10 +21,10 @@ public class UserPrincipal implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority("USER"));
-        if (user.getRole() == UserRole.ADMIN) {
+        if (user.getUserrole() == UserRole.ADMIN) {
             authorities.add(new SimpleGrantedAuthority("ADMIN"));
         }
-        if (user.getRole() == UserRole.HEAD_ADMIN) {
+        if (user.getUserrole() == UserRole.HEAD_ADMIN) {
             authorities.add(new SimpleGrantedAuthority("HEAD_ADMIN"));
         }
         return authorities;
@@ -37,7 +37,7 @@ public class UserPrincipal implements UserDetails {
 
     @Override
     public String getUsername() {
-        return user.getEmail();
+        return user.getUsername();
     }
 
     @Override

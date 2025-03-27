@@ -4,6 +4,9 @@ import com.opi.StudApp.Model.Comment;
 import com.opi.StudApp.Model.Point;
 import com.opi.StudApp.Service.AppService.CommentService;
 import com.opi.StudApp.Service.AppService.PointsService;
+import com.opi.StudApp.Service.UserService.JwtService;
+import com.opi.StudApp.Service.UserService.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +27,10 @@ public class CommentController {
 
     @Autowired
     private PointsService pointsService;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private JwtService jwtService;
 
     @GetMapping("getcomments")
     public ResponseEntity<List<Comment>> getCommentsByPoint(@RequestBody int pointId) {
@@ -33,23 +40,8 @@ public class CommentController {
     }
 
     @PostMapping("addcomment")
-    public ResponseEntity<String> addComment(@RequestBody Comment comment){
+    public ResponseEntity<String> addComment(HttpServletRequest request, @RequestBody Comment comment){
+        comment.setUser(userService.findByUsername(jwtService.extractUsername(request.getHeader("Authorization").substring(7))));
         return new ResponseEntity<>(commentService.addComment(comment), HttpStatus.OK);
-    }
-
-    @GetMapping("/hello")
-    public String hello() {
-        return "hello";
-    }
-
-    @GetMapping("/log-token")
-    public String logAuthorizationHeader(@RequestHeader(value = "Authorization", required = false) String authorizationHeader) {
-        if (authorizationHeader != null) {
-            // Logujemy nagłówek Authorization (token)
-            logger.info("Otrzymany nagłówek Authorization: {}", authorizationHeader);
-        } else {
-            logger.warn("Brak nagłówka Authorization.");
-        }
-        return "Nagłówek Authorization został zalogowany.";
     }
 }
