@@ -54,7 +54,7 @@ public class JwtService {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public String extractEmail(String token) {
+    public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
     }
 
@@ -72,7 +72,7 @@ public class JwtService {
 
 
     public boolean validateToken(String token, UserDetails userDetails) {
-        final String email = extractEmail(token);
+        final String email = extractUsername(token);
         return (email.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
 

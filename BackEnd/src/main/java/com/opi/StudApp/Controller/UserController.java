@@ -38,7 +38,9 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<List<String>> login(@RequestBody User user) {
         System.out.println(user);
-
+        if(!userService.isLocalUser(user)){
+            return new ResponseEntity<>(List.of("Acoount was not created locally"), HttpStatus.NOT_FOUND);
+        }
         Authentication authentication = authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
 
@@ -52,39 +54,39 @@ public class UserController {
         }
     }
 
-    @PostMapping("/headadmin/setrole/{roleID}")
-    public ResponseEntity<String> setUserAsAdmin(@RequestBody User user, @PathVariable int roleID) {
-
-        return new ResponseEntity<>(userService.setUserAsAdmin(user), HttpStatus.OK);
-    }
-
-    @GetMapping("/headadmin/{username}/password")
-    public ResponseEntity<String> remindPassword(@PathVariable String username){
-        User existingUser = userService.findByUsername(username);
-
-        if (existingUser == null) {
-            return new ResponseEntity<>("User does not exist", HttpStatus.BAD_REQUEST);
-        }
-
-        existingUser.setPassword("REMEMBER");
-        userService.addUser(existingUser);
-        return new ResponseEntity<>("New Password: \"REMEMBER\"", HttpStatus.MOVED_PERMANENTLY);
-    }
-
-    @GetMapping("changepassword")
-    public ResponseEntity<String> changePassword(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader, @RequestBody String password){
-
-        String token = authorizationHeader.substring(7);
-
-        User user = userService.findByUsername(jwtService.extractEmail(token));
-        user.setPassword(password);
-        userService.addUser(user);
-        return new ResponseEntity<>("Password changed", HttpStatus.OK);
-    }
-
-    @PostMapping("/forgot-password")
-    public ResponseEntity<String> forgotPassword(@RequestBody String email) {
+//    @PostMapping("/headadmin/setrole/{roleID}")
+//    public ResponseEntity<String> setUserAsAdmin(@RequestBody User user, @PathVariable int roleID) {
+//
+//        return new ResponseEntity<>(userService.setUserAsAdmin(user), HttpStatus.OK);
+//    }
+//
+//    @GetMapping("/headadmin/{username}/password")
+//    public ResponseEntity<String> remindPassword(@PathVariable String username){
+//        User existingUser = userService.findByUsername(username);
+//
+//        if (existingUser == null) {
+//            return new ResponseEntity<>("User does not exist", HttpStatus.BAD_REQUEST);
+//        }
+//
+//        existingUser.setPassword("REMEMBER");
+//        userService.addUser(existingUser);
+//        return new ResponseEntity<>("New Password: \"REMEMBER\"", HttpStatus.MOVED_PERMANENTLY);
+//    }
+//
+//    @GetMapping("changepassword")
+//    public ResponseEntity<String> changePassword(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader, @RequestBody String password){
+//
+//        String token = authorizationHeader.substring(7);
+//
+//        User user = userService.findByUsername(jwtService.extractEmail(token));
+//        user.setPassword(password);
+//        userService.addUser(user);
+//        return new ResponseEntity<>("Password changed", HttpStatus.OK);
+//    }
+//
+//    @PostMapping("/forgot-password")
+//    public ResponseEntity<String> forgotPassword(@RequestBody String email) {
 //        return userService.resetPassword(email);
-        return null;
-    }
+//        return null;
+//    }
 }

@@ -19,6 +19,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -50,20 +51,20 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("/login", "/register").permitAll()
+                        .requestMatchers("/login", "/register", "/map").permitAll()
                         .requestMatchers("/headadmin/**").hasRole("HEAD_ADMIN")
                         .requestMatchers("/admin**").hasRole("ADMIN")
                         .anyRequest().authenticated())
-                .exceptionHandling(exep -> exep
-                .authenticationEntryPoint(customAuthenticationEntryPoint))
-                .oauth2Login(oauth2 -> oauth2
-                        .successHandler(oAuth2LoginSuccessHandler) // Co zrobić po zalogowaniu?
-                )
+//                .exceptionHandling(exep -> exep
+//                .authenticationEntryPoint(customAuthenticationEntryPoint))
+//                .oauth2Login(oauth2 -> oauth2
+//                        .successHandler(oAuth2LoginSuccessHandler) // Co zrobić po zalogowaniu?
+//                )
 //                        .anyRequest().permitAll())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilterBefore(jwtFilter, OAuth2LoginAuthenticationFilter.class);
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 //        UsernamePasswordAuthenticationFilter.class
-
+//        OAuth2LoginAuthenticationFilter.class
         return http.build();
     }
 

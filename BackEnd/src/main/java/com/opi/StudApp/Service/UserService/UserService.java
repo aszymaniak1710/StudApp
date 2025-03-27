@@ -1,5 +1,6 @@
 package com.opi.StudApp.Service.UserService;
 
+import com.opi.StudApp.Model.Enum.AuthProvider;
 import com.opi.StudApp.Model.Enum.UserRole;
 import com.opi.StudApp.Model.User;
 import com.opi.StudApp.Repo.UserRepo;
@@ -12,8 +13,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserService {
 
-    @Autowired
-    private EmailService emailService;
+
     @Autowired
     private JwtService jwtService;
     @Autowired
@@ -31,29 +31,16 @@ public class UserService {
     }
 
     public String setUserAsAdmin(User user) {
-        user.setRole(UserRole.ADMIN);
+        user.setUserrole(UserRole.ADMIN);
         userRepo.save(user);
         return "User`s permisions changed";
     }
 
     public UserRole getRole(String username) {
-        return userRepo.findByUsername(username).getRole();
+        return userRepo.findByUsername(username).getUserrole();
     }
 
-    public ResponseEntity<String> resetPassword(String email) {
-        User user = userRepo.findByEmail(email);
-        if(user == null){
-            return new ResponseEntity<>("User 404", HttpStatus.NOT_FOUND);
-        }
-
-        // Generowanie tokena JWT ważnego 15 minut
-        String resetToken = jwtService.generateShortLivedToken(user.getEmail());
-
-        // Tworzenie linku do resetu hasła
-        String resetLink = "http://frontend.com/reset-password?token=" + resetToken;
-
-        // Wysłanie e-maila
-        emailService.sendEmail(user.getEmail(), "Password Reset",
-                "Click the link to reset your password: " + resetLink);
-    }
+    public boolean isLocalUser(User user){
+        return userRepo.findByUsername(user.getUsername()).getAuthprovider() == AuthProvider.LOCAL;
+    };
 }

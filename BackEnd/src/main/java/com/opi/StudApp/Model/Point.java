@@ -29,6 +29,6 @@ public class Point {
     private String description;
     @OneToMany(mappedBy = "point", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments;
-    private boolean valid;
+    private boolean valid = false;
 }
 
