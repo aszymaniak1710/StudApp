@@ -51,7 +51,7 @@ const [isAdmin, setAdmin] = useState(false);
               setRoleId(roleid);
               //dodanie dodatkowych możliwości dla administratora i headadministratora że moga zawsze dodawa
               if(roleid == 1){
-                isAdmin = true;
+                setAdmin(true);
                   }
             }
 
@@ -70,17 +70,14 @@ const [isAdmin, setAdmin] = useState(false);
      setUserLocation(location.coords);
    };
 
-   useEffect(() => {
-     getUserLocation();
-     fetchMarkers();
-   }, []);
+
 
    const MyComponent = () => {
      const { globalVariable, setGlobalVariable } = useAppContext();
 
    const fetchMarkers = async () => {
      try {
-       const response = await api.get('http://192.168.1.5:8080/map'); // Adres endpointu backendowego
+       const response = await api.get('http://192.168.1.17:8080/map'); // Adres endpointu backendowego
        const points = response.data;
 
        const formattedMarkers = points.map((point: any) => ({
@@ -96,7 +93,10 @@ const [isAdmin, setAdmin] = useState(false);
        Alert.alert('Błąd', 'Nie udało się pobrać danych z serwera.');
      }
    };
-
+   useEffect(() => {
+     getUserLocation();
+     fetchMarkers();
+   }, []);
 
    const addMarker = async () => {
      if (!newTitle) {
@@ -137,8 +137,6 @@ const [isAdmin, setAdmin] = useState(false);
      }
    };
 
-
-
    const handleMapPress = (e: any) => {
      if (isAddingMarker) {
        const coordinate = e.nativeEvent.coordinate;
@@ -171,7 +169,6 @@ const [isAdmin, setAdmin] = useState(false);
       }
      ]);
    };
-
 
    return (
 
@@ -244,6 +241,7 @@ const [isAdmin, setAdmin] = useState(false);
                />
      </View>
    );
+ }
  }
 
  const styles = StyleSheet.create({

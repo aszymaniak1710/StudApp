@@ -21,7 +21,7 @@ const LoginView = ({ navigation }: any) => {
 
     try {
       // Wyślij dane logowania do backendu
-      const response = await axios.post('http://192.168.1.26:8080/login', loginData);
+      const response = await axios.post('http://192.168.1.17:8080/login', loginData);
 
       // Sprawdzamy odpowiedź
       const [jwtToken, roleid] = response.data;

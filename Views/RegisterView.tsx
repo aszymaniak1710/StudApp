@@ -20,7 +20,7 @@ const RegisterView = ({ navigation }: any) => {
     }
 
     try {
-      const response = await api.post('http://192.168.1.5:8080/register', {
+      const response = await api.post('http://192.168.1.17:8080/register', {
         username: username,
         password: password,
       });

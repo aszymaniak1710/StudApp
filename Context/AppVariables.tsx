@@ -5,7 +5,7 @@ const AppVariables = createContext();
 
 // Tworzymy dostawcę kontekstu
 export const AppProvider = ({ children }) => {
-  const [baseURL, setURL] = useState('http://192.168.1.26:8080');
+  const [baseURL, setURL] = useState('http://192.168.1.17:8080');
 
   return (
     <AppVariables.Provider value={{ baseURL, setURL }}>
