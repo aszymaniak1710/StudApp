@@ -43,4 +43,22 @@ public class UserService {
     public boolean isLocalUser(User user){
         return userRepo.findByUsername(user.getUsername()).getAuthprovider() == AuthProvider.LOCAL;
     };
+
+    public void loginGoogle(String email, String state) {
+        User user = userRepo.findByUsername(email);
+        if (user == null){
+            user = new User(email);
+            user.setAuthprovider(AuthProvider.GOOGLE);
+            user.setPassword(state);
+            userRepo.save(user);
+        }
+
+    }
+
+    public User getUserByTempPassword(String tempPassword) {
+        User user = userRepo.findByPassword(tempPassword);
+        if(user == null)
+            return null;
+        return user;
+    }
 }

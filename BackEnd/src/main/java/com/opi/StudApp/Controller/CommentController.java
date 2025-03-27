@@ -32,15 +32,16 @@ public class CommentController {
     @Autowired
     private JwtService jwtService;
 
-    @GetMapping("getcomments")
+    @GetMapping("/getcommentsforpoint")
     public ResponseEntity<List<Comment>> getCommentsByPoint(@RequestBody int pointId) {
         Point point = pointsService.getPointById(pointId);
 
         return new ResponseEntity<>(commentService.getCommentsByPoint(point), HttpStatus.OK);
     }
 
-    @PostMapping("addcomment")
+    @PostMapping("/addcomment")
     public ResponseEntity<String> addComment(HttpServletRequest request, @RequestBody Comment comment){
+        System.out.println(comment);
         comment.setUser(userService.findByUsername(jwtService.extractUsername(request.getHeader("Authorization").substring(7))));
         return new ResponseEntity<>(commentService.addComment(comment), HttpStatus.OK);
     }

@@ -16,17 +16,17 @@ public class PointsController {
     @Autowired
     PointsService pointsService;
 
-    @GetMapping("map")
+    @GetMapping("/map")
     public ResponseEntity<List<Point>> getValidPoints() {
         return new ResponseEntity<>(pointsService.getValidPoints(), HttpStatus.OK);
     }
 
-    @GetMapping("mapextra")
+    @GetMapping("/mapextra")
     public ResponseEntity<List<Point>> getAllPoints() {
         return new ResponseEntity<>(pointsService.getAllPoints(), HttpStatus.OK);
     }
 
-    @PostMapping("admin/addpoint")
+    @PostMapping("/admin/addpoint")
     public ResponseEntity<String> addValidPoint(@RequestBody Point point){
         point.setValid(true);
         System.out.println(point);
@@ -34,7 +34,7 @@ public class PointsController {
     }
 
 
-    @PostMapping("addpoint")
+    @PostMapping("/addpoint")
     public ResponseEntity<String> addPointRequest(@RequestBody Point point){
         point.setValid(false);
         pointsService.addPoint(point);
@@ -47,7 +47,7 @@ public class PointsController {
         return new ResponseEntity<>("Point updated", HttpStatus.OK);
     }
 
-    @PostMapping("admin/deletepoint")
+    @PostMapping("/admin/deletepoint")
     public ResponseEntity<String> deletePoint(@RequestBody Point point){
         return new ResponseEntity<>(pointsService.deletePoint(point), HttpStatus.OK);
     }

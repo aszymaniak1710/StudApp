@@ -1,5 +1,6 @@
 package com.opi.StudApp.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.annotation.Generated;
 import jakarta.annotation.Nonnull;
@@ -28,6 +29,7 @@ public class Point {
     @Nonnull
     private String description;
     @OneToMany(mappedBy = "point", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<Comment> comments;
     private boolean valid = false;
 }
