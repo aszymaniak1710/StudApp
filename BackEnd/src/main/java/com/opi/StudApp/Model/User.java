@@ -27,6 +27,8 @@ public class User {
         this.username = email;
     }
 
+    public User() {
+    }
 
     @Override
     public String toString() {
@@ -38,4 +40,43 @@ public class User {
                 '}';
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public UserRole getUserrole() {
+        return userrole;
+    }
+
+    public void setUserrole(UserRole userrole) {
+        this.userrole = userrole;
+    }
+
+    public AuthProvider getAuthprovider() {
+        return authprovider;
+    }
+
+    public void setAuthprovider(AuthProvider authprovider) {
+        this.authprovider = authprovider;
+    }
 }

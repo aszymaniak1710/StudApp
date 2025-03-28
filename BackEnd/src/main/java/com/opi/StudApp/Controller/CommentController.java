@@ -32,11 +32,11 @@ public class CommentController {
     @Autowired
     private JwtService jwtService;
 
-    @GetMapping("/getcommentsforpoint")
-    public ResponseEntity<List<Comment>> getCommentsByPoint(@RequestBody int pointId) {
-        Point point = pointsService.getPointById(pointId);
 
-        return new ResponseEntity<>(commentService.getCommentsByPoint(point), HttpStatus.OK);
+    @PostMapping("/getcommentsforpoint")
+    public ResponseEntity<List<Comment>> getCommentsByPoint(@RequestBody Point point) {
+        Point newPoint = pointsService.findPointById(point.getId());
+        return new ResponseEntity<>(commentService.getCommentsByPoint(newPoint), HttpStatus.OK);
     }
 
     @PostMapping("/addcomment")
