@@ -2,12 +2,15 @@
 import React, { useState } from 'react';
 import { View, TextInput, Button, Text, Alert, StyleSheet } from 'react-native';
 import api from "../api";
+import { useNavigation } from '@react-navigation/native';
+import { baseUrl } from '../Context/AppVariables';
 
-const RegisterView = ({ navigation }: any) => {
+const RegisterView = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [password2, setPassword2] = useState('');
   const [loading, setLoading] = useState(false);
+  const navigation = useNavigation();
 
 
   const handleSignUp = async () => {
@@ -20,7 +23,7 @@ const RegisterView = ({ navigation }: any) => {
     }
 
     try {
-      const response = await api.post('http://192.168.1.17:8080/register', {
+      const response = await api.post(baseUrl + '/register', {
         username: username,
         password: password,
       });

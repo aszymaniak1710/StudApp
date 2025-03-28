@@ -4,14 +4,14 @@ import { View, Text, FlatList, Modal, Button, StyleSheet } from 'react-native';
 const SearchComment = ({ visible, onClose, pointId }) => {
   const [comments, setComments] = useState([]);
 
-  useEffect(() => {
-    if (visible && pointId) {
-      fetch(`http://your-api-url/api/comments/${pointId}`)
-        .then((response) => response.json())
-        .then((data) => setComments(data))
-        .catch((error) => console.error('Error fetching comments:', error));
-    }
-  }, [visible, pointId]);
+useEffect(() => {
+  if (visible && pointId) {
+    fetch(baseUrl + `/getcomments?pointId=${pointId}`) // Wysłanie pointId jako parametr URL
+      .then((response) => response.json())
+      .then((data) => setComments(data))
+      .catch((error) => console.error('Błąd pobierania komentarzy:', error));
+  }
+}, [visible, pointId]);
 
   const renderItem = ({ item }) => (
     <View style={styles.commentItem}>

@@ -2,13 +2,15 @@ import React, { useState } from 'react';
 import { View, TextInput, Button, Text, Alert, StyleSheet } from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
 import RegisterView from './RegisterView'
+import { useNavigation } from '@react-navigation/native';
+import { baseUrl } from '../Context/AppVariables';
 
-const LoginView = ({ navigation }: any) => {
+const LoginView = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const navigation = useNavigation();
 
   const handleSignIn = async () => {
     setLoading(true);
@@ -21,7 +23,7 @@ const LoginView = ({ navigation }: any) => {
 
     try {
       // Wyślij dane logowania do backendu
-      const response = await axios.post('http://192.168.1.17:8080/login', loginData);
+      const response = await axios.post(baseUrl+'/login', loginData);
 
       // Sprawdzamy odpowiedź
       const [jwtToken, roleid] = response.data;
@@ -33,7 +35,7 @@ const LoginView = ({ navigation }: any) => {
         Alert.alert('Zalogowano pomyślnie!');
 
         // Możesz przekierować użytkownika na ekran główny po pomyślnym logowaniu
-        navigation.navigate('Strona główna');
+       navigation.navigate('Mapa');
       } else {
         Alert.alert('Błąd logowania', 'Niepoprawne dane logowania');
       }
@@ -62,7 +64,7 @@ const LoginView = ({ navigation }: any) => {
       />
       <Button title="Zaloguj się" onPress={handleSignIn} disabled={loading} />
       <Text style={styles.footer}>
-        Nie masz konta? <Text style={styles.link} onPress={() => navigation.navigate('RegisterView')}>Zarejestruj się</Text>
+        Nie masz konta? <Text style={styles.link} onPress={() => navigation.navigate('Rejestracja')}>Zarejestruj się</Text>
       </Text>
     </View>
   );

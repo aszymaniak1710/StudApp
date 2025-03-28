@@ -8,8 +8,10 @@ import AddCommentModal from '../AddCommentModal';
 import SearchComment from './SearchComment';
 import { useRoute } from '@react-navigation/native';
 import api from "../api";
+//import { useAppContext } from '../Context/AppVariables';
+import { baseUrl } from '../Context/AppVariables';
 
-const OPEN_THRESHOLD = 100;
+//const OPEN_THRESHOLD = 100;
 
 export default function PointsView() {
   const route = useRoute();
@@ -29,6 +31,7 @@ export default function PointsView() {
   const [jwtToken, setJwtToken] = useState('');
   const [isPanelOpen, setIsPanelOpen] = useState(false);
   const translateX = new Animated.Value(-300);
+ // const { baseURL, setURL } = useAppContext();
 
   useEffect(() => {
     const fetchToken = async () => {
@@ -56,8 +59,10 @@ export default function PointsView() {
 
   const fetchMarkers = async () => {
     try {
-      const response = await api.get('http://192.168.1.26:8080/map');
+        console.log(baseUrl);
+      const response = await api.get(baseUrl + '/map');
       const points = response.data;
+      console.log("Fetched points:", points);
       const formattedMarkers = points.map((point) => ({
         latitude: parseFloat(point.xcoor),
         longitude: parseFloat(point.ycoor),
@@ -84,7 +89,7 @@ export default function PointsView() {
         description: newDescription || "No description",
       };
       try {
-        const response = await api.post('http://192.168.1.26:8080/admin/addpoint', newMarker);
+        const response = await api.post(baseUrl + '/admin/addpoint', newMarker);
         if (response.status === 201) {
           Alert.alert("Success", "Marker successfully added!");
           fetchMarkers();
