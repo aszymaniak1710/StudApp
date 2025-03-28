@@ -32,5 +32,76 @@ public class Point {
     @JsonIgnore
     private List<Comment> comments;
     private boolean valid = false;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    @Nonnull
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(@Nonnull String title) {
+        this.title = title;
+    }
+
+    public float getXcoor() {
+        return xcoor;
+    }
+
+    public void setXcoor(float xcoor) {
+        this.xcoor = xcoor;
+    }
+
+    public float getYcoor() {
+        return ycoor;
+    }
+
+    public void setYcoor(float ycoor) {
+        this.ycoor = ycoor;
+    }
+
+    @Nonnull
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(@Nonnull String description) {
+        this.description = description;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
+    }
+
+    public boolean isValid() {
+        return valid;
+    }
+
+    public void setValid(boolean valid) {
+        this.valid = valid;
+    }
+
+    @Override
+    public String toString() {
+        return "Point{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", xcoor=" + xcoor +
+                ", ycoor=" + ycoor +
+                ", description='" + description + '\'' +
+                ", comments=" + comments +
+                ", valid=" + valid +
+                '}';
+    }
 }
 

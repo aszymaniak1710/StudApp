@@ -15,6 +15,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.client.registration.ClientRegistration;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,6 +27,8 @@ import java.util.*;
 @RestController
 public class UserController {
 
+    @Autowired
+    private ClientRegistrationRepository clientRegistrationRepository;
     @Autowired
     private JwtService jwtService;
     @Autowired
@@ -61,25 +66,32 @@ public class UserController {
     }
 
     @PostMapping("/initgooglelogin")
-    public ResponseEntity<String> initGoogleLogin(@RequestBody String tempPassword){
-        String googleLoginUrl = "https://accounts.google.com/o/oauth2/v2/auth" +
-                "?client_id=297475385106-v8cep0on4488cdrvi2uma3qlf0mva9q1.apps.googleusercontent.com" +
-                "&redirect_uri=http://localhost:8080/login/oauth2/code/google" +
-                "&response_type=code" +
-                "&scope=email" +
-                "&state=" + tempPassword;
-        return new ResponseEntity<>("redirect:" + googleLoginUrl, HttpStatus.OK);
+    public String getGoogleAuthUrl(@RequestBody String state, HttpSession session) {
+        // Zapisujemy state do sesji
+        session.setAttribute("state", state);  // Zapisujemy customowy state w sesji
+
+        // Pobieramy dane rejestracji klienta Google
+        ClientRegistration clientRegistration = clientRegistrationRepository.findByRegistrationId("google");
+
+        // Tworzymy OAuth2AuthorizationRequest z własnym `state`
+        OAuth2AuthorizationRequest authorizationRequest = OAuth2AuthorizationRequest.authorizationCode()
+                .authorizationUri(clientRegistration.getProviderDetails().getAuthorizationUri())
+                .clientId(clientRegistration.getClientId())
+                .redirectUri("http://localhost:8080/login/oauth2/code/google")  // Ustawiamy nowy `redirectUri`
+                .scopes(clientRegistration.getScopes())
+                .state(state)  // Wstawiamy nasz `state`
+                .build();
+
+        // Zapisujemy pełne authorizationRequest w sesji, nie tylko state
+        session.setAttribute("authorizationRequest", authorizationRequest);
+
+        // Tworzymy link do autoryzacji
+        String authorizationUri = authorizationRequest.getAuthorizationRequestUri();
+
+        return authorizationUri;
     }
 
-    @RequestMapping("/login/oauth2/code/google")
-    public String handleGoogleRedirect(@RequestParam("state") String state, Authentication authentication) {
-        System.out.println("SIEMA");
-        OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
-        String email = oAuth2User.getAttribute("email");
-        System.out.println(email);
-        userService.loginGoogle(email, state);
-        return "loggedIn";
-    }
+
 
     @PostMapping("/finishgooglelogin")
     public ResponseEntity<String> finishGoogleLogin(@RequestBody String tempPassword){
@@ -88,6 +100,7 @@ public class UserController {
         String role = user.getUserrole().name();
         return new ResponseEntity<>(String.format("{[\"%s\", \"%s\"]}", jwt, role), HttpStatus.OK);
     }
+
 //    @PostMapping("/headadmin/setrole/{roleID}")
 //    public ResponseEntity<String> setUserAsAdmin(@RequestBody User user, @PathVariable int roleID) {
 //

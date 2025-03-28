@@ -8,38 +8,32 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
-import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
 @Component
-public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
-
+public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
     @Autowired
     private UserRepo userRepo;
-    @Autowired
-    private JwtService jwtService;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
         OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
 
         String email = oAuth2User.getAttribute("email");
-
+        System.out.println(email);
+        String state = request.getParameter("state");
+        if (state != null) {
+            System.out.println("🔹 Odebrany state: " + state);
+        } else {
+            System.out.println("⚠️ Brak parametru `state` w URL!");
+        }
         User user = userRepo.findByUsername(email);
         if (user == null){
             user = new User(email);
-            user.setAuthprovider(AuthProvider.GOOGLE);
             userRepo.save(user);
         }
-
-        String jwt = jwtService.generateToken(user.getUsername());
-        String role = user.getUserrole().name();
-
-        String jsonResponse = String.format("{[\"%s\", \"%s\"]}", jwt, role);
-        response.setContentType("application/json");
-        response.getWriter().write(jsonResponse);
-
     }
 }

@@ -35,4 +35,8 @@ public class PointsService {
         return pointsRepo.findById(pointId)
                 .orElse(null);
     }
+
+    public Point findPointById(Integer id) {
+        return pointsRepo.findById(id).orElse(null);
+    }
 }
