@@ -1,5 +1,6 @@
 package com.opi.StudApp.Security;
 
+import com.opi.StudApp.Model.CustomAuthorizationRequestResolver;
 import com.opi.StudApp.Repo.UserRepo;
 import com.opi.StudApp.Service.UserService.CustomUserDetailsService;
 import com.opi.StudApp.Service.UserService.JwtService;
@@ -16,6 +17,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -23,7 +26,9 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     @Autowired
-    private UserRepo userRepo;
+    private CustomAuthorizationRequestResolver customAuthorizationRequestResolver;
+    @Autowired
+    private ClientRegistrationRepository clientRegistrationRepository;
     @Autowired
     private OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
     @Autowired
@@ -46,22 +51,16 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request
-                        .anyRequest().permitAll())
-//                        .requestMatchers("/login", "/register", "/map", "/login/oauth2/code/google").permitAll()
-//                        .requestMatchers("/headadmin/**").hasRole("HEAD_ADMIN")
-//                        .requestMatchers("/admin**").hasRole("ADMIN")
-//                        .anyRequest().permitAll())
-//                .exceptionHandling(exep -> exep
-//                .authenticationEntryPoint(customAuthenticationEntryPoint))
-//                .oauth2Login(oauth2 -> oauth2
-//                        .authorizationEndpoint(ep -> ep.authorizationRequestRepository(customAuthorizationRequestRepository))
-//                        .successHandler(oAuth2LoginSuccessHandler) // Nasz handler po logowaniu
-//                )
-//                        .anyRequest().permitAll())
+                        .requestMatchers("/login", "/register", "/map").permitAll()
+                        .requestMatchers("/headadmin/**").hasRole("HEAD_ADMIN")
+                        .requestMatchers("/admin**").hasRole("ADMIN")
+                        .anyRequest().authenticated())
+                .oauth2Login(oauth2 -> oauth2
+                        .authorizationEndpoint(ep -> ep.authorizationRequestResolver(customAuthorizationRequestResolver))
+                        .successHandler(oAuth2LoginSuccessHandler)
+                )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 //                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
-//        UsernamePasswordAuthenticationFilter.class
-//        OAuth2LoginAuthenticationFilter.class
         return http.build();
     }
 

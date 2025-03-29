@@ -26,9 +26,9 @@ import java.util.*;
 @CrossOrigin(origins = "*")
 @RestController
 public class UserController {
-
-    @Autowired
-    private ClientRegistrationRepository clientRegistrationRepository;
+//
+//    @Autowired
+//    private ClientRegistrationRepository clientRegistrationRepository;
     @Autowired
     private JwtService jwtService;
     @Autowired
@@ -65,31 +65,31 @@ public class UserController {
         }
     }
 
-    @PostMapping("/initgooglelogin")
-    public String getGoogleAuthUrl(@RequestBody String state, HttpSession session) {
-        // Zapisujemy state do sesji
-        session.setAttribute("state", state);  // Zapisujemy customowy state w sesji
-
-        // Pobieramy dane rejestracji klienta Google
-        ClientRegistration clientRegistration = clientRegistrationRepository.findByRegistrationId("google");
-
-        // Tworzymy OAuth2AuthorizationRequest z własnym `state`
-        OAuth2AuthorizationRequest authorizationRequest = OAuth2AuthorizationRequest.authorizationCode()
-                .authorizationUri(clientRegistration.getProviderDetails().getAuthorizationUri())
-                .clientId(clientRegistration.getClientId())
-                .redirectUri("http://localhost:8080/login/oauth2/code/google")  // Ustawiamy nowy `redirectUri`
-                .scopes(clientRegistration.getScopes())
-                .state(state)  // Wstawiamy nasz `state`
-                .build();
-
-        // Zapisujemy pełne authorizationRequest w sesji, nie tylko state
-        session.setAttribute("authorizationRequest", authorizationRequest);
-
-        // Tworzymy link do autoryzacji
-        String authorizationUri = authorizationRequest.getAuthorizationRequestUri();
-
-        return authorizationUri;
-    }
+//    @PostMapping("/initgooglelogin")
+//    public String getGoogleAuthUrl(@RequestBody String state, HttpSession session) {
+//        // Zapisujemy state do sesji
+//        session.setAttribute("state", state);  // Zapisujemy customowy state w sesji
+//
+//        // Pobieramy dane rejestracji klienta Google
+//        ClientRegistration clientRegistration = clientRegistrationRepository.findByRegistrationId("google");
+//
+//        // Tworzymy OAuth2AuthorizationRequest z własnym `state`
+//        OAuth2AuthorizationRequest authorizationRequest = OAuth2AuthorizationRequest.authorizationCode()
+//                .authorizationUri(clientRegistration.getProviderDetails().getAuthorizationUri())
+//                .clientId(clientRegistration.getClientId())
+//                .redirectUri("http://localhost:8080/login/oauth2/code/google")  // Ustawiamy nowy `redirectUri`
+//                .scopes(clientRegistration.getScopes())
+//                .state(state)  // Wstawiamy nasz `state`
+//                .build();
+//
+//        // Zapisujemy pełne authorizationRequest w sesji, nie tylko state
+//        session.setAttribute("authorizationRequest", authorizationRequest);
+//
+//        // Tworzymy link do autoryzacji
+//        String authorizationUri = authorizationRequest.getAuthorizationRequestUri();
+//
+//        return authorizationUri;
+//    }
 
 
 
