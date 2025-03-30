@@ -1,3 +1,14 @@
+/*
+ pomysł na rozdzielenie na admina i basic:
+
+ przy logowaniu zapisujemy roleid
+
+ App -> nawigacja w zależności od roli
+ jeśli admin to dostaje te mapę co jest teraz
+
+ jeśli zwykły użytkownik to dodaje punkty bez valid nie opcji usuwania!
+ */
+
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TextInput, Modal, TouchableOpacity, Alert, Animated } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
@@ -8,10 +19,9 @@ import AddCommentModal from '../AddCommentModal';
 import SearchComment from './SearchComment';
 import { useRoute } from '@react-navigation/native';
 import api from "../api";
-//import { useAppContext } from '../Context/AppVariables';
 import { baseUrl } from '../Context/AppVariables';
+//import {styles} from "../Styles/Style"
 
-//const OPEN_THRESHOLD = 100;
 
 export default function PointsView() {
   const route = useRoute();
@@ -31,7 +41,6 @@ export default function PointsView() {
   const [jwtToken, setJwtToken] = useState('');
   const [isPanelOpen, setIsPanelOpen] = useState(false);
   const translateX = new Animated.Value(-300);
- // const { baseURL, setURL } = useAppContext();
 
   useEffect(() => {
     const fetchToken = async () => {
@@ -39,7 +48,7 @@ export default function PointsView() {
       if (jwtToken) {
         setJwtToken(jwtToken);
       } else {
-        Alert.alert("You are not logged in. To add comments, please log in to your account first.");
+        Alert.alert("Nie jesteś zalogowany. Żeby dodać komentarze najpierw zaloguj się do swojego konta.");
       }
     };
     fetchToken();
@@ -50,7 +59,7 @@ export default function PointsView() {
   const getUserLocation = async () => {
     let { status } = await Location.requestForegroundPermissionsAsync();
     if (status !== 'granted') {
-      alert('Permission to access location was denied');
+      alert('Zabroniony dostęp do lokalizacji');
       return;
     }
     const location = await Location.getCurrentPositionAsync({});
@@ -68,17 +77,18 @@ export default function PointsView() {
         longitude: parseFloat(point.ycoor),
         title: `${point.id}`,
         description: point.description || 'No description',
+        valid: point.valid,//tu dodac valid do sprawdzania pov
       }));
       setMarkers(formattedMarkers);
     } catch (error) {
-      console.error('Error fetching points:', error);
-      Alert.alert('Error', 'Failed to fetch data from server.');
+      console.error('Błąd pobierania punktów:', error);
+      Alert.alert('Error', 'Błąd pobrania punktów z serwera.');
     }
   };
 
   const addMarker = async () => {
     if (!newTitle) {
-      Alert.alert("Error", "Title is required!");
+      Alert.alert("Error", "Tytuł jest wymagany!");
       return;
     }
     if (selectedCoordinates) {
@@ -86,19 +96,19 @@ export default function PointsView() {
         xcoor: selectedCoordinates.latitude,
         ycoor: selectedCoordinates.longitude,
         title: newTitle,
-        description: newDescription || "No description",
+        description: newDescription || "Brak opisu",
       };
       try {
         const response = await api.post(baseUrl + '/admin/addpoint', newMarker);
         if (response.status === 201) {
-          Alert.alert("Success", "Marker successfully added!");
+          Alert.alert("Success", "Punkt dodany pomyślnie!");
           fetchMarkers();
         } else {
-          Alert.alert("Error", "Failed to add marker.");
+          Alert.alert("Error", "Nieudana próba dodawania punktu.");
         }
       } catch (error) {
-        console.error("Error adding marker:", error);
-        Alert.alert("Error", "An error occurred while adding the marker.");
+        console.error("Błąd dodawania punktu:", error);
+        Alert.alert("Error", "Błąd podczas dodawania punktu.");
       }
       setModalVisible(false);
       setNewTitle('');
@@ -115,19 +125,65 @@ export default function PointsView() {
     }
   };
 
-  const removeMarker = (markerIndex) => {
-    Alert.alert("Delete Marker", "Are you sure you want to delete this marker?", [
-      { text: "Cancel", style: "cancel" },
-      { text: "Delete", onPress: () => setMarkers(markers.filter((_, index) => index !== markerIndex)) },
-    ]);
-  };
+const removeMarker = (markerIndex) => {
+  Alert.alert("Usuń marker", "Jesteś pewien, że chcesz usunąć punkt?", [
+    { text: "Cancel", style: "cancel" },
+    {
+      text: "Usuń",
+      onPress: async () => {
+        try {
+          const pointId = markers[markerIndex].id; // Pobieramy tylko ID punktu
+
+          await api.post(`${baseUrl}/admin/deletepoint`, { id: pointId });
+
+          // Usunięcie markera z lokalnego stanu po sukcesie
+          setMarkers((prevMarkers) => prevMarkers.filter((_, index) => index !== markerIndex));
+        } catch (error) {
+          console.error("Błąd usuwania punktu:", error);
+        }
+      }
+    },
+  ]);
+};
+
+const commitMarker = (markerIndex) =>{
+  Alert.alert("Zatwierdź marker", "Jesteś pewien, że chcesz zatwierdzić punkt?", [
+     { text: "Cancel", style: "cancel" },
+     {
+       text: "Zatwierdź",
+       onPress: async () => {
+         try {
+           const pointId = markers[markerIndex].id; // Pobieramy tylko ID punktu
+
+           await api.post(`${baseUrl}/admin/addpoint`, { id: pointId });
+
+           // Zatwierdzenie markera lokalnie
+                     setMarkers((prevMarkers) =>
+                       prevMarkers.map((marker, index) =>
+                         index === markerIndex ? { ...marker, valid: true } : marker
+                       )
+                     );
+         } catch (error) {
+           console.error("Błąd zatwierdzanie punktu:", error);
+         }
+       }
+     },
+   ]);
+ };
 
   const handleMarkerPress = (markerIndex) => {
-    Alert.alert("Marker Options", "Choose an action", [
+    Alert.alert("Opcje", "Wybierz działanie", [
       { text: "Cancel", style: "cancel" },
-      { text: "Delete", onPress: () => removeMarker(markerIndex) },
-      { text: "Add Comment", onPress: () => { setCurrentMarkerIndex(markerIndex); setCommentModalVisible(true); } },
-      { text: "View Comments", onPress: () => { setCurrentMarkerIndex(markerIndex); setSearchCommentVisible(true); } }
+      //usuwanie tylko jeśli admin
+      { text: "Usuń", onPress: () => removeMarker(markerIndex) },
+      { text: "Dodaj komentarz", onPress: () => { setCurrentMarkerIndex(markerIndex); setCommentModalVisible(true); } },
+      { text: "Wyświetl komentarze", onPress: () => { setCurrentMarkerIndex(markerIndex); setSearchCommentVisible(true); } }
+      //jeśli admin i valid==false to dodatkowo zatwierdz
+      //{ text: "Zatwierdź", onPress: () => Marker(markerIndex) },
+     /*     ...(isAdmin && marker.valid === false
+            ? [{ text: "Zatwierdź", onPress: () => commitMarker(markerIndex) }]
+            : []), //pov
+     */
     ]);
   };
 
@@ -152,11 +208,15 @@ export default function PointsView() {
                  onPress={handleMapPress}
              >
              {markers.map((marker, index) => (
+
+                 //if (marker.valid === true || (isAdmin && marker.valid === false)) {
+                  //       return (
                <Marker
                  key={index}
                  coordinate={{ latitude: marker.latitude, longitude: marker.longitude }}
                  title={marker.title}
                  description={marker.description}
+                 pinColor={marker.valid === false ? "blue" : "red"} /*pov*/
                  onCalloutPress={() => handleMarkerPress(index)}
                />
              ))}
@@ -181,8 +241,8 @@ export default function PointsView() {
          <Modal animationType="slide" transparent={true} visible={modalVisible} onRequestClose={() => setModalVisible(false)}>
            <View style={styles.modalContainer}>
              <View style={styles.modalContent}>
-               <TextInput style={styles.input} placeholder="Enter title (required)" value={newTitle} onChangeText={setNewTitle} />
-               <TextInput style={styles.input} placeholder="Enter description (optional)" value={newDescription} onChangeText={setNewDescription} />
+               <TextInput style={styles.input} placeholder="Dodaj tytuł (wymagane)" value={newTitle} onChangeText={setNewTitle} />
+               <TextInput style={styles.input} placeholder="Dodaj opis" value={newDescription} onChangeText={setNewDescription} />
                <TouchableOpacity onPress={addMarker} style={styles.createButton}><Text style={styles.addButtonText}>Send suggestion to admin</Text></TouchableOpacity>
                <TouchableOpacity onPress={() => { setModalVisible(false); setIsAddingMarker(false); setNewTitle(''); setNewDescription(''); }} style={styles.cancelButton}>
                  <Text style={styles.cancelButtonText}>Cancel</Text>
@@ -211,46 +271,46 @@ export default function PointsView() {
    }
 
 
- const styles = StyleSheet.create({
-   button: {
-     backgroundColor: 'blue',
-     padding: 10,
-     borderRadius: 5,
-   },
-   buttonText: {
-     color: 'white',
-     fontSize: 18,
-   },
-   panel: {
-     position: 'absolute',
-     top: 0,
-     left: 0,
-     bottom: 0,
-     width: 250,
-     backgroundColor: 'lightblue',
-     padding: 20,
-     justifyContent: 'center',
-   },
-   panelText: {
-     fontSize: 20,
-     marginBottom: 20,
-   },
-   closeButton: {
-     backgroundColor: 'red',
-     padding: 10,
-     borderRadius: 5,
-     alignItems: 'center',
-   },
-   container: { flex: 1 },
-   map: { width: '100%', height: '100%' },
-   addButton: { position: 'absolute', bottom: 30, right: 30, backgroundColor: 'white', borderRadius: 50, padding: 10, elevation: 5 },
-   modalContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0, 0, 0, 0.5)' },
-   modalContent: { backgroundColor: 'white', padding: 20, borderRadius: 10, width: '80%' },
-   input: { height: 40, borderColor: '#ccc', borderWidth: 1, marginBottom: 10, paddingLeft: 10, borderRadius: 5 },
-   createButton: { backgroundColor: 'green', padding: 10, borderRadius: 5, alignItems: 'center' },
-   addButtonText: { color: 'white', fontWeight: 'bold' },
-   infoBox: { position: 'absolute', top: 20, padding: 10, backgroundColor: 'rgba(0, 0, 0, 0.7)', borderRadius: 5, width: '90%', alignItems: 'center' },
-   infoText: { color: 'white', fontSize: 16 },
-   cancelButton: { backgroundColor: '#f44336', padding: 10, borderRadius: 5, alignItems: 'center', marginTop: 10 },
-   cancelButtonText: { color: 'white', fontWeight: 'bold' },
- });
+   const styles = StyleSheet.create({
+      button: {
+        backgroundColor: 'blue',
+        padding: 10,
+        borderRadius: 5,
+      },
+      buttonText: {
+        color: 'white',
+        fontSize: 18,
+      },
+      panel: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        bottom: 0,
+        width: 250,
+        backgroundColor: 'lightblue',
+        padding: 20,
+        justifyContent: 'center',
+      },
+      panelText: {
+        fontSize: 20,
+        marginBottom: 20,
+      },
+      closeButton: {
+        backgroundColor: 'red',
+        padding: 10,
+        borderRadius: 5,
+        alignItems: 'center',
+      },
+      container: { flex: 1 },
+      map: { width: '100%', height: '100%' },
+      addButton: { position: 'absolute', bottom: 30, right: 30, backgroundColor: 'white', borderRadius: 50, padding: 10, elevation: 5 },
+      modalContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0, 0, 0, 0.5)' },
+      modalContent: { backgroundColor: 'white', padding: 20, borderRadius: 10, width: '80%' },
+      input: { height: 40, borderColor: '#ccc', borderWidth: 1, marginBottom: 10, paddingLeft: 10, borderRadius: 5 },
+      createButton: { backgroundColor: 'green', padding: 10, borderRadius: 5, alignItems: 'center' },
+      addButtonText: { color: 'white', fontWeight: 'bold' },
+      infoBox: { position: 'absolute', top: 20, padding: 10, backgroundColor: 'rgba(0, 0, 0, 0.7)', borderRadius: 5, width: '90%', alignItems: 'center' },
+      infoText: { color: 'white', fontSize: 16 },
+      cancelButton: { backgroundColor: '#f44336', padding: 10, borderRadius: 5, alignItems: 'center', marginTop: 10 },
+      cancelButtonText: { color: 'white', fontWeight: 'bold' },
+    });

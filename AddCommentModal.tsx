@@ -84,7 +84,7 @@ console.log(commentData);
         <View style={styles.modalContent}>
           <TextInput
             style={styles.input}
-            placeholder="Add comment"
+            placeholder="Dodaj komentarz"
             value={newComment}
             onChangeText={setNewComment}
           />

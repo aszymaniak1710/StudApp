@@ -1,57 +1,60 @@
-import * as React from 'react';
+import React from 'react';
+import 'react-native-gesture-handler';
 import { View } from 'react-native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import {
-  createStaticNavigation,
-  useNavigation,
-} from '@react-navigation/native';
-import { Button } from '@react-navigation/elements';
-import PointsView from "../Views/PointsView"
-import LoginView from "../Views/LoginView"
-import RegisterView from "../Views/RegisterView"
+import { NavigationContainer } from '@react-navigation/native';
+import { Button } from 'react-native'; // Poprawiony import
+import PointsView from '../Views/PointsView';
+import LoginView from '../Views/LoginView';
+import RegisterView from '../Views/RegisterView';
+import { AuthProvider, useAuth } from './AuthContext';
 
-
-function HomeScreen() {
-  const navigation = useNavigation();
-
+// Komponent ekranu głównego
+function HomeScreen({ navigation }) {
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Button onPress={() => navigation.navigate('Mapa')}>
-        Go to notifications
-      </Button>
+      <Button title="Go to Mapa" onPress={() => navigation.navigate('Mapa')} />
     </View>
   );
 }
 
-function NotificationsScreen() {
-  const navigation = useNavigation();
-
+// Komponent ekranu powiadomień
+function NotificationsScreen({ navigation }) {
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Button onPress={() => navigation.goBack()}>Go back home</Button>
+      <Button title="Go back home" onPress={() => navigation.goBack()} />
     </View>
   );
 }
 
-const Drawer = createDrawerNavigator({
-  screens: {
-      Mapa: {
-        screen: PointsView,
-        initialParams: { isButtonVisible: false }
-      },
-    Home: HomeScreen,
-      'Zarejestruj nowy punkt': {
-        screen: PointsView,
-        initialParams: { isButtonVisible: true}
-      },
+const Drawer = createDrawerNavigator();
 
-    Logowanie: LoginView,
-    Rejestracja: RegisterView
-  },
-});
+const DrawerNavigator = () => {
+  const { isAuthenticated }  = useAuth(); // Pobranie statusu zalogowania
 
-const Navigation = createStaticNavigation(Drawer);
+  return (
+    <Drawer.Navigator>
+      <Drawer.Screen name="Mapa" component={PointsView} initialParams={{ isButtonVisible: false }} />
+      <Drawer.Screen name="Zarejestruj nowy punkt" component={PointsView} initialParams={{ isButtonVisible: true }} />
 
+      {!isAuthenticated && (
+        <>
+          <Drawer.Screen name="Logowanie" component={LoginView} />
+          <Drawer.Screen name="Rejestracja" component={RegisterView} />
+        </>
+      )}
+    </Drawer.Navigator>
+  );
+};
+
+// Główna nawigacja aplikacji
 export default function App() {
-  return <Navigation />;
+  return (
+    <AuthProvider>
+      <NavigationContainer>
+        <DrawerNavigator />
+      </NavigationContainer>
+    </AuthProvider>
+  );
 }
+

@@ -1,17 +1,35 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, Modal, Button, StyleSheet } from 'react-native';
+import api from '../api'
+import { baseUrl } from '../Context/AppVariables';
 
 const SearchComment = ({ visible, onClose, pointId }) => {
   const [comments, setComments] = useState([]);
 
 useEffect(() => {
-  if (visible && pointId) {
-    fetch(baseUrl + `/getcomments?pointId=${pointId}`) // Wysłanie pointId jako parametr URL
-      .then((response) => response.json())
-      .then((data) => setComments(data))
-      .catch((error) => console.error('Błąd pobierania komentarzy:', error));
-  }
-}, [visible, pointId]);
+  const fetchComments = async () => {
+    if (visible && pointId) {
+              const Point = {
+                id: pointId,
+              };
+      try {
+        const response = await api.post(baseUrl + `/getcommentsforpoint`, Point);
+
+        if (!response.ok) {
+          throw new Error(`Błąd HTTP: ${response.status}`);
+        }
+
+        const data = await response.json();
+        setComments(data);
+      } catch (error) {
+        console.error("Błąd pobierania komentarzy:", error);
+      }
+    }
+  };
+
+  fetchComments();
+}, [visible, pointId]); // <- Dependency array, aby efekt działał poprawnie
+
 
   const renderItem = ({ item }) => (
     <View style={styles.commentItem}>

@@ -5,16 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b20352fd-fb0f-48e9-ac3d-663af0ef6527" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/AddCommentModal.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/AddCommentModal.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Context/App.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/Context/App.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Context/AppVariables.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/Context/AppVariables.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Views/DrawerNavigator.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Views/ChangePasswordView.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/Views/ChangePasswordView.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Views/HomeView.tsx" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Views/LoginView.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/Views/LoginView.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Views/PointsView.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/Views/PointsView.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Views/RegisterView.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/Views/RegisterView.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Views/SearchComment.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/Views/SearchComment.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api.js" beforeDir="false" afterPath="$PROJECT_DIR$/api.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -46,16 +46,16 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "Branch-Front",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/Iga/Desktop/STUDIA/VI semestr/StudApp-laptop/Frontend",
-    "settings.editor.selected.configurable": "Console"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;Branch-Front&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Iga/Desktop/STUDIA/VI semestr/StudApp-laptop/Frontend&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;Console&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\Iga\Desktop\STUDIA\VI semestr\StudApp-laptop\Frontend\Context" />

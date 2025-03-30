@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext } from 'react';
-import PointsView from "../Views/PointsView"; // Import PointsView
+//import PointsView from "../Views/PointsView"; // Import PointsView
 
 // Tworzymy kontekst
 const AppVariables = createContext();
@@ -17,4 +17,4 @@ export const AppProvider = ({ children }) => {
 
 // Hook do używania kontekstu w komponentach
 //export const useAppContext = () => useContext(AppVariables);
-export const baseUrl = 'http://192.168.1.5:8080';
+export const baseUrl = 'http://192.168.1.26:8080';

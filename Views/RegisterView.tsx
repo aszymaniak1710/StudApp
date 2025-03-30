@@ -32,7 +32,7 @@ const RegisterView = () => {
 
       if (response.data && response.data.success) {
         Alert.alert('Rejestracja udana!', jsonResponse);
-        navigation.navigate('SignIn');
+        navigation.navigate('Logowanie');
       } else {
         Alert.alert(jsonResponse);
       }

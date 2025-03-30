@@ -5,12 +5,14 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import RegisterView from './RegisterView'
 import { useNavigation } from '@react-navigation/native';
 import { baseUrl } from '../Context/AppVariables';
+import {useAuth} from '../Context/AuthContext'
 
 const LoginView = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const navigation = useNavigation();
+  const { login } = useAuth();
 
   const handleSignIn = async () => {
     setLoading(true);
@@ -21,10 +23,12 @@ const LoginView = () => {
       password: password,
     };
 
+
     try {
       // Wyślij dane logowania do backendu
       const response = await axios.post(baseUrl+'/login', loginData);
 
+        if (response.status == 200){
       // Sprawdzamy odpowiedź
       const [jwtToken, roleid] = response.data;
 
@@ -33,15 +37,21 @@ const LoginView = () => {
         await AsyncStorage.setItem('jwtToken', jwtToken);
         await AsyncStorage.setItem('roleid', roleid.toString());
         Alert.alert('Zalogowano pomyślnie!');
+        login();
 
         // Możesz przekierować użytkownika na ekran główny po pomyślnym logowaniu
        navigation.navigate('Mapa');
       } else {
+          setLoading(false);
         Alert.alert('Błąd logowania', 'Niepoprawne dane logowania');
       }
+  } else {
+      Alert.alert(response.data)
+      }
     } catch (error) {
+        setLoading(false);
       console.error('Błąd logowania:', error);
-      Alert.alert('Błąd', 'Wystąpił problem z połączeniem');
+      Alert.alert('Błąd', response.data);
     }
   }
 
