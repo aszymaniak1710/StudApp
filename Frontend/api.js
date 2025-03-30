@@ -1,9 +1,10 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Alert } from 'react-native';
+import { baseUrl } from './Context/AppVariables';
 
 const api = axios.create({
-    baseURL: 'http://192.168.1.26:8080', // Adres backendu Spring Boot
+    baseURL: baseUrl, // Adres backendu Spring Boot
 });
 
 api.interceptors.request.use(async (config) => {

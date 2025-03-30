@@ -6,7 +6,7 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
-    "newArchEnabled": true, //przedtem było true!!!
+    "newArchEnabled": true,
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
@@ -15,8 +15,7 @@
     "ios": {
       "bundleIdentifier": "com.example.myapp",
       "supportsTablet": true,
-      "buildNumber": "1.0.0",
-      "googleServicesFile": "./GoogleService-Info.plist"
+      "buildNumber": "1.0.0"
     },
     "android": {
       "adaptiveIcon": {

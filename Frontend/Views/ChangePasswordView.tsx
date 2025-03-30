@@ -21,7 +21,7 @@ const ChangePasswordView = ({ navigation }: any) => {
 
     try {
       // Wyślij dane logowania do backendu
-      const response = await axios.post('http://192.168.1.26:8080/login', changeData);
+      const response = await axios.post(baseUrl, changeData);
 //jak tu będzie wyglądać odpowiedz serwera???
 
   }
