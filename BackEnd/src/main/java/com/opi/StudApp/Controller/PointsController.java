@@ -21,12 +21,12 @@ public class PointsController {
         return new ResponseEntity<>(pointsService.getValidPoints(), HttpStatus.OK);
     }
 
-    @GetMapping("/mapextra")
+    @GetMapping("/admin/extramap")
     public ResponseEntity<List<Point>> getAllPoints() {
         return new ResponseEntity<>(pointsService.getAllPoints(), HttpStatus.OK);
     }
 
-    @PostMapping("/setvalid")
+    @PostMapping("/admin/setvalid")
     public ResponseEntity<String> setValid(@RequestBody Point point){
         Point newPoint = pointsService.findPointById(point.getId());
         if (newPoint.isValid()){

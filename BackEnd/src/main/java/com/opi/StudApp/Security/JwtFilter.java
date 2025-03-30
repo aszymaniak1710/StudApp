@@ -31,10 +31,6 @@ public class JwtFilter extends OncePerRequestFilter {
     private JwtService jwtService;
     @Autowired
     ApplicationContext context;
-    private final String GOOGLE_ISSUER = "https://accounts.google.com";
-    private final String GOOGLE_JWKS_URI = "https://www.googleapis.com/oauth2/v3/certs";
-
-    private JWKSource<SecurityContext> jwkSource;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -52,24 +48,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
         if (header != null && header.startsWith("Bearer ")) {
             token = header.substring(7);
-            try {
-                // Sprawdź issuer JWT
-                String issuer = jwtService.extractClaim(token, Claims::getIssuer);
-
-                if (GOOGLE_ISSUER.equals(issuer)) {
-                    System.out.println("token z google");
-                    if (validateGoogleToken(token)) {
-                        userName = jwtService.extractClaim(token, Claims::getSubject);
-                    }
-                } else {
-                    // Token pochodzi z naszej aplikacji
-                    userName = jwtService.extractUsername(token);
-                }
-
-            } catch (Exception e) {
-                filterChain.doFilter(request, response);
-                return;
-            }
+                userName = jwtService.extractUsername(token);
         }
         if(userName != null && SecurityContextHolder.getContext().getAuthentication() == null){
             UserDetails userDetails = context.getBean(CustomUserDetailsService.class).loadUserByUsername(userName);
@@ -81,17 +60,5 @@ public class JwtFilter extends OncePerRequestFilter {
             }
         }
         filterChain.doFilter(request, response);
-    }
-    private boolean validateGoogleToken(String token) {
-        try {
-            ConfigurableJWTProcessor<SecurityContext> jwtProcessor = new DefaultJWTProcessor<>();
-            JWSKeySelector<SecurityContext> keySelector = new JWSVerificationKeySelector<>(
-                    com.nimbusds.jose.JWSAlgorithm.RS256, jwkSource);
-            jwtProcessor.setJWSKeySelector(keySelector);
-            jwtProcessor.process(token, null);
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
     }
 }
