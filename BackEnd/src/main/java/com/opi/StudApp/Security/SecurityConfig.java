@@ -19,6 +19,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
+import org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -51,7 +52,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("/login", "/register", "/map").permitAll()
+                        .requestMatchers("/mylogin", "/register", "/map", "/getcommentsforpoint").permitAll()
                         .requestMatchers("/headadmin/**").hasRole("HEAD_ADMIN")
                         .requestMatchers("/admin**").hasRole("ADMIN")
                         .anyRequest().authenticated())
@@ -59,8 +60,8 @@ public class SecurityConfig {
                         .authorizationEndpoint(ep -> ep.authorizationRequestResolver(customAuthorizationRequestResolver))
                         .successHandler(oAuth2LoginSuccessHandler)
                 )
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-//                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(jwtFilter, OAuth2LoginAuthenticationFilter.class);
         return http.build();
     }
 

@@ -23,16 +23,15 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
 
         String email = oAuth2User.getAttribute("email");
-        System.out.println(email);
         String state = request.getParameter("state");
-        if (state != null) {
-            System.out.println("🔹 Odebrany state: " + state);
-        } else {
+
+        if (state == null) {
             System.out.println("⚠️ Brak parametru `state` w URL!");
         }
         User user = userRepo.findByUsername(email);
         if (user == null){
             user = new User(email);
+            user.setPassword(state);
             userRepo.save(user);
         }
     }
