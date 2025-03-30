@@ -5,7 +5,7 @@ import { baseUrl } from '../Context/AppVariables';
 
 const SearchComment = ({ visible, onClose, pointId }) => {
   const [comments, setComments] = useState([]);
-
+  const [filteredComments, setFilteredComments] = useState([]);
 useEffect(() => {
   const fetchComments = async () => {
     if (visible && pointId) {
@@ -15,12 +15,24 @@ useEffect(() => {
       try {
         const response = await api.post(baseUrl + `/getcommentsforpoint`, Point);
 
-        if (!response.ok) {
+        if (response.status!=200) {
           throw new Error(`Błąd HTTP: ${response.status}`);
         }
+        const data = response.data;
+        const formattedComments = data.map(comment => ({
+            id: comment.id,
+            text: comment.text,  // Tekst komentarza
+            userName: comment.user.username,  // Zakładamy, że użytkownik ma pole "name"
+            mark: comment.mark,  // Ocena (Mark) - jeśli masz ENUM, np. "GOOD", "BAD"
+            pointId: comment.point.id,  // ID punktu
+        }));
 
-        const data = await response.json();
-        setComments(data);
+        console.log('Sformatowane komentarze:', formattedComments);
+        setComments(formattedComments);
+        const filteredComments = comments.filter(comment => comment.point.id === pointId);
+        //return formattedComments;  // Zwracamy sformatowaną listę komentarzy
+
+
       } catch (error) {
         console.error("Błąd pobierania komentarzy:", error);
       }
@@ -30,13 +42,13 @@ useEffect(() => {
   fetchComments();
 }, [visible, pointId]); // <- Dependency array, aby efekt działał poprawnie
 
-
-  const renderItem = ({ item }) => (
-    <View style={styles.commentItem}>
-      <Text style={styles.author}>{item.author}</Text>
-      <Text style={styles.comment}>{item.content}</Text>
-    </View>
-  );
+    const renderItem = ({ item }) => (
+        <View style={styles.commentContainer}>
+            <Text style={styles.userName}>{item.userName}</Text>
+            <Text style={styles.commentText}>{item.text}</Text>
+            <Text style={styles.commentMark}>{item.mark}</Text>
+        </View>
+    );
 
   return (
     <Modal

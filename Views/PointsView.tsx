@@ -54,7 +54,11 @@ export default function PointsView() {
     fetchToken();
     getUserLocation();
     fetchMarkers();
-  }, []);
+        if (currentMarkerIndex !== null) {
+          setSearchCommentVisible(true); // Dopiero po ustawieniu currentMarkerIndex otwórz modal
+        }
+
+  }, [currentMarkerIndex]);
 
   const getUserLocation = async () => {
     let { status } = await Location.requestForegroundPermissionsAsync();
@@ -177,7 +181,7 @@ const commitMarker = (markerIndex) =>{
       //usuwanie tylko jeśli admin
       { text: "Usuń", onPress: () => removeMarker(markerIndex) },
       { text: "Dodaj komentarz", onPress: () => { setCurrentMarkerIndex(markerIndex); setCommentModalVisible(true); } },
-      { text: "Wyświetl komentarze", onPress: () => { setCurrentMarkerIndex(markerIndex); setSearchCommentVisible(true); } }
+      { text: "Wyświetl komentarze", onPress: () => { setCurrentMarkerIndex(markerIndex);} }
       //jeśli admin i valid==false to dodatkowo zatwierdz
       //{ text: "Zatwierdź", onPress: () => Marker(markerIndex) },
      /*     ...(isAdmin && marker.valid === false
