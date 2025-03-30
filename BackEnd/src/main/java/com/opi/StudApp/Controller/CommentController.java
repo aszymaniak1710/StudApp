@@ -39,6 +39,7 @@ public class CommentController {
         return new ResponseEntity<>(commentService.getCommentsByPoint(newPoint), HttpStatus.OK);
     }
 
+
     @PostMapping("/addcomment")
     public ResponseEntity<String> addComment(HttpServletRequest request, @RequestBody Comment comment){
         System.out.println(comment);

@@ -26,6 +26,16 @@ public class PointsController {
         return new ResponseEntity<>(pointsService.getAllPoints(), HttpStatus.OK);
     }
 
+    @PostMapping("/setvalid")
+    public ResponseEntity<String> setValid(@RequestBody Point point){
+        Point newPoint = pointsService.findPointById(point.getId());
+        if (newPoint.isValid()){
+            return new ResponseEntity<>("Punkt już jest zatwierdzony", HttpStatus.BAD_REQUEST);
+        }
+        newPoint.setValid(true);
+        pointsService.addPoint(newPoint);
+        return new ResponseEntity<>("Punkt zatwierdzony", HttpStatus.OK);
+    }
     @PostMapping("/admin/addpoint")
     public ResponseEntity<String> addValidPoint(@RequestBody Point point){
         point.setValid(true);
