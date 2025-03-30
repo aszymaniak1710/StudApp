@@ -57,7 +57,7 @@ export default function PointsView() {
   const fetchMarkers = async () => {
     try {
         console.log(baseUrl);
-      const response = await api.get(baseUrl + '/map');
+      const response = await api.get(baseUrl + '/admin/extramap');
       const points = response.data;
       console.log("Fetched points:", points);
       const formattedMarkers = points.map((point) => ({
@@ -136,6 +136,8 @@ const removeMarker = (markerIndex) => {
   ]);
 };
 
+
+
 const commitMarker = (markerIndex) =>{
   Alert.alert("Zatwierdź marker", "Jesteś pewien, że chcesz zatwierdzić punkt?", [
      { text: "Cancel", style: "cancel" },
@@ -145,7 +147,7 @@ const commitMarker = (markerIndex) =>{
          try {
            const pointId = markers[markerIndex].id; // Pobieramy tylko ID punktu
 
-           await api.post(`${baseUrl}/admin/addpoint`, { id: pointId });
+           await api.post(`${baseUrl}/admin/setvalid`, { id: pointId });
 
            // Zatwierdzenie markera lokalnie
                      setMarkers((prevMarkers) =>
@@ -172,13 +174,12 @@ const commitMarker = (markerIndex) =>{
                         console.log(markerIndex);} },
       { text: "Wyświetl komentarze", onPress: () => { setCurrentMarkerIndex(markers[markerIndex].id);setSearchCommentVisible(true);
               console.log("PUNKT Z MAPY");
-              console.log(markerIndex);} }
-      //jeśli admin i valid==false to dodatkowo zatwierdz
+              console.log(markerIndex);} },
       //{ text: "Zatwierdź", onPress: () => Marker(markerIndex) },
-     /*     ...(isAdmin && marker.valid === false
+         ...(markers[markerIndex].valid === false
             ? [{ text: "Zatwierdź", onPress: () => commitMarker(markerIndex) }]
             : []), //pov
-     */
+
     ]);
   };
 

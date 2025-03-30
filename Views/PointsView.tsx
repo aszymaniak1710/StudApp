@@ -114,71 +114,12 @@ export default function PointsView() {
     }
   };
 
-
-const removeMarker = (markerIndex) => {
-  Alert.alert("Usuń marker", "Jesteś pewien, że chcesz usunąć punkt?", [
-    { text: "Cancel", style: "cancel" },
-    {
-      text: "Usuń",
-      onPress: async () => {
-        try {
-          const pointId = markers[markerIndex].id; // Pobieramy tylko ID punktu
-
-          await api.post(`${baseUrl}/admin/deletepoint`, { id: pointId });
-
-          // Usunięcie markera z lokalnego stanu po sukcesie
-          setMarkers((prevMarkers) => prevMarkers.filter((_, index) => index !== markerIndex));
-        } catch (error) {
-          console.error("Błąd usuwania punktu:", error);
-        }
-      }
-    },
-  ]);
-};
-
-const commitMarker = (markerIndex) =>{
-  Alert.alert("Zatwierdź marker", "Jesteś pewien, że chcesz zatwierdzić punkt?", [
-     { text: "Cancel", style: "cancel" },
-     {
-       text: "Zatwierdź",
-       onPress: async () => {
-         try {
-           const pointId = markers[markerIndex].id; // Pobieramy tylko ID punktu
-
-           await api.post(`${baseUrl}/admin/addpoint`, { id: pointId });
-
-           // Zatwierdzenie markera lokalnie
-                     setMarkers((prevMarkers) =>
-                       prevMarkers.map((marker, index) =>
-                         index === markerIndex ? { ...marker, valid: true } : marker
-                       )
-                     );
-         } catch (error) {
-           console.error("Błąd zatwierdzanie punktu:", error);
-         }
-       }
-     },
-   ]);
- };
-
   const handleMarkerPress = (markerIndex) => {
       console.log("Selected Marker Index:", markerIndex);
     Alert.alert("Opcje", "Wybierz działanie", [
       { text: "Cancel", style: "cancel" },
-      //usuwanie tylko jeśli admin
-      { text: "Usuń", onPress: () => removeMarker(markerIndex) },
-      { text: "Dodaj komentarz", onPress: () => { setCurrentMarkerIndex(markers[markerIndex].id); setCommentModalVisible(true);
-                        console.log("PUNKT Z MAPY");
-                        console.log(markerIndex);} },
-      { text: "Wyświetl komentarze", onPress: () => { setCurrentMarkerIndex(markers[markerIndex].id);setSearchCommentVisible(true);
-              console.log("PUNKT Z MAPY");
-              console.log(markerIndex);} }
-      //jeśli admin i valid==false to dodatkowo zatwierdz
-      //{ text: "Zatwierdź", onPress: () => Marker(markerIndex) },
-     /*     ...(isAdmin && marker.valid === false
-            ? [{ text: "Zatwierdź", onPress: () => commitMarker(markerIndex) }]
-            : []), //pov
-     */
+      { text: "Dodaj komentarz", onPress: () => { setCurrentMarkerIndex(markers[markerIndex].id); setCommentModalVisible(true);} },
+      { text: "Wyświetl komentarze", onPress: () => { setCurrentMarkerIndex(markers[markerIndex].id);setSearchCommentVisible(true);}}
     ]);
   };
 
