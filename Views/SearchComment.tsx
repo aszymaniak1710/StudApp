@@ -9,8 +9,10 @@ const SearchComment = ({ visible, onClose, pointId }) => {
 useEffect(() => {
   const fetchComments = async () => {
     if (visible && pointId) {
+        console.log(pointId)
               const Point = {
                 id: pointId,
+
               };
       try {
         const response = await api.post(baseUrl + `/getcommentsforpoint`, Point);

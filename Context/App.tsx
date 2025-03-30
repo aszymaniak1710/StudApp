@@ -9,6 +9,9 @@ import LoginView from '../Views/LoginView';
 import RegisterView from '../Views/RegisterView';
 import { AuthProvider, useAuth } from './AuthContext';
 
+const [userrole, setUserRole] = useState('');
+const userrole = await AsyncStorage.getItem('roleid');
+
 // Komponent ekranu głównego
 function HomeScreen({ navigation }) {
   return (
