@@ -46,56 +46,32 @@ public class UserController {
         return new ResponseEntity<>(userService.addUser(user), HttpStatus.CREATED);
     }
 
-    @PostMapping("/login")
+    @PostMapping("/mylogin")
     public ResponseEntity<List<String>> login(@RequestBody User user) {
         System.out.println(user);
-        if(!userService.isLocalUser(user)){
-            return new ResponseEntity<>(List.of("Acoount was not created locally"), HttpStatus.NOT_FOUND);
-        }
-        Authentication authentication = authenticationManager
-                .authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
+        try {
+            if (!userService.isLocalUser(user)) {
+                return new ResponseEntity<>(List.of("Acoount was not created locally"), HttpStatus.NOT_FOUND);
+            }
+            Authentication authentication = authenticationManager
+                    .authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
 
-        List<String> response = new ArrayList<>();
-        if (authentication.isAuthenticated()) {
-            response.add(jwtService.generateToken(user.getUsername()));
-            response.add(String.valueOf(userService.getRole(user.getUsername())));
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(List.of("Login Failed"), HttpStatus.NOT_FOUND);
+            List<String> response = new ArrayList<>();
+            if (authentication.isAuthenticated()) {
+                response.add(jwtService.generateToken(user.getUsername()));
+                response.add(String.valueOf(userService.getRole(user.getUsername())));
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(List.of("Login Failed"), HttpStatus.UNAUTHORIZED);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>(List.of("Login Failed"), HttpStatus.UNAUTHORIZED);
         }
     }
 
-//    @PostMapping("/initgooglelogin")
-//    public String getGoogleAuthUrl(@RequestBody String state, HttpSession session) {
-//        // Zapisujemy state do sesji
-//        session.setAttribute("state", state);  // Zapisujemy customowy state w sesji
-//
-//        // Pobieramy dane rejestracji klienta Google
-//        ClientRegistration clientRegistration = clientRegistrationRepository.findByRegistrationId("google");
-//
-//        // Tworzymy OAuth2AuthorizationRequest z własnym `state`
-//        OAuth2AuthorizationRequest authorizationRequest = OAuth2AuthorizationRequest.authorizationCode()
-//                .authorizationUri(clientRegistration.getProviderDetails().getAuthorizationUri())
-//                .clientId(clientRegistration.getClientId())
-//                .redirectUri("http://localhost:8080/login/oauth2/code/google")  // Ustawiamy nowy `redirectUri`
-//                .scopes(clientRegistration.getScopes())
-//                .state(state)  // Wstawiamy nasz `state`
-//                .build();
-//
-//        // Zapisujemy pełne authorizationRequest w sesji, nie tylko state
-//        session.setAttribute("authorizationRequest", authorizationRequest);
-//
-//        // Tworzymy link do autoryzacji
-//        String authorizationUri = authorizationRequest.getAuthorizationRequestUri();
-//
-//        return authorizationUri;
-//    }
-
-
-
     @PostMapping("/finishgooglelogin")
-    public ResponseEntity<String> finishGoogleLogin(@RequestBody String tempPassword){
-        User user = userService.getUserByTempPassword(tempPassword);
+    public ResponseEntity<String> finishGoogleLogin(@RequestBody String state){
+        User user = userService.getUserByTempPassword(state);
         String jwt = jwtService.generateToken(user.getUsername());
         String role = user.getUserrole().name();
         return new ResponseEntity<>(String.format("{[\"%s\", \"%s\"]}", jwt, role), HttpStatus.OK);

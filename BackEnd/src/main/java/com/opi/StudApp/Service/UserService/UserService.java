@@ -55,8 +55,8 @@ public class UserService {
 
     }
 
-    public User getUserByTempPassword(String tempPassword) {
-        User user = userRepo.findByPassword(tempPassword);
+    public User getUserByTempPassword(String state) {
+        User user = userRepo.findByPassword(state);
         if(user == null)
             return null;
         return user;
