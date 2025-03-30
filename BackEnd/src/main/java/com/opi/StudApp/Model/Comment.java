@@ -1,11 +1,11 @@
 package com.opi.StudApp.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.opi.StudApp.Model.Enum.Mark;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.lang.ref.Reference;
 
 @Data
 @NoArgsConstructor
@@ -13,13 +13,14 @@ import java.lang.ref.Reference;
 @Entity
 public class Comment {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @OneToOne
+    @ManyToOne
     private User user;
     private String text;
     @Enumerated(EnumType.STRING)
     private Mark mark;
     @ManyToOne
-    @JoinColumn(name = "id_point", nullable = false)
     private Point point;
+
 }

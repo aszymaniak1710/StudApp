@@ -1,18 +1,13 @@
-package com.opi.StudApp.Service;
+package com.opi.StudApp.Service.UserService;
 
 import com.opi.StudApp.Model.User;
 import com.opi.StudApp.Model.UserPrincipal;
 import com.opi.StudApp.Repo.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
@@ -28,7 +23,6 @@ public class CustomUserDetailsService implements UserDetailsService {
                 System.out.println("User 404");
                 throw new UsernameNotFoundException("User 404");
             }
-
             return new UserPrincipal(user);
         }
 }

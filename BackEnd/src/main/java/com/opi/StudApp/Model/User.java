@@ -1,7 +1,10 @@
 package com.opi.StudApp.Model;
 
+import com.opi.StudApp.Model.Enum.AuthProvider;
+import com.opi.StudApp.Model.Enum.UserRole;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -11,43 +14,27 @@ import lombok.NoArgsConstructor;
 @Table(name="users")
 @Entity
 public class User {
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public void setRoleID(int roleID) {
-        this.roleID = roleID;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public int getRoleID() {
-        return roleID;
-    }
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @Column(unique = true)
     private String username;
     private String password;
-    private int roleID;
+    private UserRole userrole = UserRole.USER;
+    private AuthProvider authprovider = AuthProvider.LOCAL;
+
+    public User(String email) {
+        this.username = email;
+    }
+
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", userrole=" + userrole +
+                '}';
+    }
 }

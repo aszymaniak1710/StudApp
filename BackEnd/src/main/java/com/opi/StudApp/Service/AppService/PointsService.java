@@ -1,4 +1,4 @@
-package com.opi.StudApp.Service;
+package com.opi.StudApp.Service.AppService;
 
 import com.opi.StudApp.Model.Point;
 import com.opi.StudApp.Repo.PointsRepo;
@@ -13,7 +13,7 @@ public class PointsService {
     @Autowired
     private PointsRepo pointsRepo;
 
-    public List<Point> getPoints() {
+    public List<Point> getValidPoints() {
         return pointsRepo.findByValid(true);
     }
 
@@ -29,5 +29,14 @@ public class PointsService {
     public String deletePoint(Point point) {
         pointsRepo.delete(point);
         return "Point deleted";
+    }
+
+    public Point getPointById(int pointId) {
+        return pointsRepo.findById(pointId)
+                .orElse(null);
+    }
+
+    public Point findPointById(Integer id) {
+        return pointsRepo.findById(id).orElse(null);
     }
 }
