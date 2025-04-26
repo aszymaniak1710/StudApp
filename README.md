@@ -1,1 +1,1 @@
-Aplikajca mobilna dla studentów, do wyszukiwania promocji oraz miejsc, w których honoruje się legitymację studencką.
+A mobile app in React Native and Java Spring, aimed at students who are looking for cheap places. It is a map with points that any user can request to add. There is also an admin role that allows you to confirm points added by regular users. To run it, you need to open the backend project and run it in any IDE, then open the frontend project and run it with expo go by typing "expo start".
